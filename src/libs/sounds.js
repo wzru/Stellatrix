@@ -376,7 +376,7 @@ function consecutively(list_of_sounds) {
 /**
  * makes a new sound by combining the sounds in a given
  * list so that
- * they play simutaneously, all starting at the beginning of the 
+ * they play simultaneously, all starting at the beginning of the 
  * resulting sound
  * @param {list_of_sounds} sounds - given list of sounds
  * @returns {sound} resulting sound

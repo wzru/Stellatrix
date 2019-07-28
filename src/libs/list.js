@@ -17,7 +17,7 @@ function array_test(x) {
 // pair constructs a pair using a two-element array
 // LOW-LEVEL FUNCTION, NOT SOURCE
 function pair(x, xs) {
-  return [x, xs]
+  return [x, xs];
 }
 
 // is_pair returns true iff arg is a two-element array

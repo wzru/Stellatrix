@@ -2,6 +2,12 @@
   Modified from cadet-fronted
   (https://github.com/source-academy/cadet-frontend/blob/master/public/externalLibs/sound/soundToneMatrix.js)
 */
+/*
+  some constant
+*/
+const standard_note = 60;
+const quarter_note_time = 0.625;
+
 
 var $tone_matrix; // canvas container for tone matrix
 
@@ -426,49 +432,49 @@ function midi_note_to_frequency(note) {
 }
 
 function square_sound(freq, duration) {
-    function fourier_expansion_square(t) {
-        var answer = 0;
-        for (var i = 1; i <= fourier_expansion_level; i++) {
-            answer = answer +
-		Math.sin(2 * Math.PI * (2 * i - 1) * freq * t)
-		/
-		(2 * i - 1);
-        }
-        return answer;
+  function fourier_expansion_square(t) {
+    var answer = 0;
+    for (var i = 1; i <= fourier_expansion_level; i++) {
+      answer = answer +
+        Math.sin(2 * Math.PI * (2 * i - 1) * freq * t)
+        /
+        (2 * i - 1);
     }
-    return make_sound(t => 
-        (4 / Math.PI) * fourier_expansion_square(t),
-        duration);
+    return answer;
+  }
+  return make_sound(t =>
+    (4 / Math.PI) * fourier_expansion_square(t),
+    duration);
 }
 
 function triangle_sound(freq, duration) {
-    function fourier_expansion_triangle(t) {
-        var answer = 0;
-        for (var i = 0; i < fourier_expansion_level; i++) {
-            answer = answer +
-		Math.pow(-1, i) *
-		Math.sin((2 * i + 1) * t * freq * Math.PI * 2)
-		/
-		Math.pow((2 * i + 1), 2);
-        }
-        return answer;
+  function fourier_expansion_triangle(t) {
+    var answer = 0;
+    for (var i = 0; i < fourier_expansion_level; i++) {
+      answer = answer +
+        Math.pow(-1, i) *
+        Math.sin((2 * i + 1) * t * freq * Math.PI * 2)
+        /
+        Math.pow((2 * i + 1), 2);
     }
-    return make_sound(t => 
-        (8 / Math.PI / Math.PI) * fourier_expansion_triangle(t),
-        duration);
+    return answer;
+  }
+  return make_sound(t =>
+    (8 / Math.PI / Math.PI) * fourier_expansion_triangle(t),
+    duration);
 }
 
 function sawtooth_sound(freq, duration) {
-    function fourier_expansion_sawtooth(t) {
-        var answer = 0;
-        for (var i = 1; i <= fourier_expansion_level; i++) {
-            answer = answer + Math.sin(2 * Math.PI * i * freq * t) / i;
-        }
-        return answer;
+  function fourier_expansion_sawtooth(t) {
+    var answer = 0;
+    for (var i = 1; i <= fourier_expansion_level; i++) {
+      answer = answer + Math.sin(2 * Math.PI * i * freq * t) / i;
     }
-    return make_sound(t =>
-		      (1 / 2) - (1 / Math.PI) * fourier_expansion_sawtooth(t),
-		      duration);
+    return answer;
+  }
+  return make_sound(t =>
+    (1 / 2) - (1 / Math.PI) * fourier_expansion_sawtooth(t),
+    duration);
 }
 
 function exponential_decay(decay_period) {
@@ -497,11 +503,11 @@ function exponential_decay(decay_period) {
  * @param {number} release_time - duration of release phase in seconds
  * @returns {function} envelope: function from sound to sound
  */
-function adsr(attack_time, decay_time, sustain_level, release_time) {
-  return sound => {
+function adsr(attack_time, decay_time, sustain_level, release_time, force_rate = 1.0) {
+  const result = sound => {
     var wave = get_wave(sound);
     var duration = get_duration(sound);
-    return make_sound( x => {
+    return make_sound(x => {
       if (x < attack_time) {
         return wave(x) * (x / attack_time);
       } else if (x < attack_time + decay_time) {
@@ -515,6 +521,7 @@ function adsr(attack_time, decay_time, sustain_level, release_time) {
       }
     }, duration);
   };
+  return sound => { return make_sound(x => result(sound)(x) * force_rate); };
 }
 
 // waveform is a function that accepts freq, dur and returns sound
@@ -542,11 +549,11 @@ function stacking_adsr(waveform, base_frequency, duration, envelopes) {
   }
 
   return simultaneously(accumulate(
-      (x, y) => pair((tail(x))
-		     (waveform(base_frequency * head(x), duration))
-		     , y)
-      , null
-      , zip(envelopes, 1)));
+    (x, y) => pair((tail(x))
+      (waveform(base_frequency * head(x), duration))
+      , y)
+    , null
+    , zip(envelopes, 1)));
 }
 
 // instruments for students
@@ -622,13 +629,13 @@ function cello(note, duration) {
       adsr(0, 0, 0.2, 0.3)));
 }
 
-function noise_sound(duration) {
-  return make_sound(t => Math.random() * 2 - 1, duration);
-}
+// function noise_sound(duration) {
+//   return make_sound(t => Math.random() * 2 - 1, duration);
+// }
 
-function drum(note, duration) {
-  return adsr(0.005, 0.495, 0, 0)(sine_sound(note, duration));
-}
+// function drum(note, duration) {
+//   return adsr(0.005, 0.495, 0, 0)(sine_sound(note, duration));
+// }
 
 function string_to_list_of_numbers(string) {
   var array_of_numbers = string.split("");
@@ -637,8 +644,102 @@ function string_to_list_of_numbers(string) {
   }, vector_to_list(array_of_numbers));
 }
 
+function stellatrix_trombone(note, duration, force_rate = 1.0) {
+  return stacking_adsr(square_sound, midi_note_to_frequency(note), duration,
+    list(adsr(0.4, 0, 1, 0, force_rate),
+      adsr(0.6472, 1.2, 0, 0, force_rate)));
+}
 
-function play_sound(matrix_property, instrument_property) {
+function stellatrix_piano(note, duration, force_rate = 1.0) {
+  return stacking_adsr(triangle_sound, midi_note_to_frequency(note), duration,
+    list(adsr(0, 1.03, 0, 0, force_rate),
+      adsr(0, 0.64, 0, 0, force_rate),
+      adsr(0, 0.4, 0, 0, force_rate)));
+}
 
-    
+function stellatrix_bell(note, duration, force_rate = 1.0) {
+  return stacking_adsr(square_sound, midi_note_to_frequency(note), duration,
+    list(adsr(0, 1.2, 0, 0, force_rate),
+      adsr(0, 1.3236, 0, 0, force_rate),
+      adsr(0, 1.5236, 0, 0, force_rate),
+      adsr(0, 1.8142, 0, 0, force_rate)));
+}
+
+function stellatrix_violin(note, duration, force_rate = 1.0) {
+  return stacking_adsr(sawtooth_sound, midi_note_to_frequency(note), duration,
+    list(adsr(0.7, 0, 1, 0.3, force_rate),
+      adsr(0.7, 0, 1, 0.3, force_rate),
+      adsr(0.9, 0, 1, 0.3, force_rate),
+      adsr(0.9, 0, 1, 0.3, force_rate)));
+}
+
+function stellatrix_cello(note, duration, force_rate = 1.0) {
+  return stacking_adsr(square_sound, midi_note_to_frequency(note), duration,
+    list(adsr(0.1, 0, 1, 0.2, force_rate),
+      adsr(0.1, 0, 1, 0.3, force_rate),
+      adsr(0, 0, 0.2, 0.3, force_rate)));
+}
+
+function make_stellatrix_sound(matrix_property, instrument_property) {
+  const list_2d = vector_to_list(matrix_property["matrix"]);
+  //console.log(matrix_property["matrix"]);  
+  //console.log(list_2d);
+  const excursion = instrument_property["excursion"];
+  const i_name = instrument_property["i_name"];
+  const duration_rate = 5 / instrument_property["speed"];
+  const force_rate = instrument_property["force"] / 5;
+  function make_unit_sound(i_name, note, duration, force) {
+    function find_instrument(i_name) {
+      if (i_name === "trombone") {
+        return stellatrix_trombone;
+      }
+      else if (i_name === "bell") {
+        return stellatrix_bell;
+      }
+      else if (i_name === "cello") {
+        return stellatrix_cello;
+      }
+      else if (i_name === "violin") {
+        return stellatrix_violin;
+      }
+      else return stellatrix_piano
+    }
+    return find_instrument(i_name)(note, duration, force_rate);
+  }
+  function boolean_vector_to_sound(ba) {//处理第二维
+    const lst = vector_to_list(ba);
+    //console.log(lst);
+    function iter(result, rest, cnt) {
+      // console.log(rest);
+      // console.log(is_null(rest));
+      if (rest.length===0) {
+        return result;
+      }
+      else {
+        //console.log(rest);
+        if (head(rest) === 1) {
+          const tmp = pair(make_unit_sound(i_name,
+            standard_note + cnt + excursion,
+            quarter_note_time * duration_rate,
+            force_rate),
+            result);
+          return iter(tmp, tail(rest), cnt + 1);
+        }
+        else {
+          return iter(result, tail(rest), cnt + 1);
+        }
+      }
+    }
+    return simultaneously(iter(null, lst, 0));
+  }
+  function iter(result, rest) {//处理第一维
+    if (rest.length===0) {
+      return result;
+    }
+    else {
+      const tmp = pair(boolean_vector_to_sound(head(rest)), result);
+      return iter(tmp, tail(rest));
+    }
+  }
+  return consecutively(iter(null, list_2d));
 }
