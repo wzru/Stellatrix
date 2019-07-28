@@ -6,7 +6,7 @@
 matrix_property = {
 	"m_row"   : integer,
 	"m_col"   : integer,
-	"matrix"  : boolean[][]
+	"matrix"  : boolean[][] //not clicked is FALSE
 }
 ```
 

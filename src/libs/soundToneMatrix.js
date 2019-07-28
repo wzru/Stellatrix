@@ -634,9 +634,3 @@ function string_to_list_of_numbers(string) {
     return parseInt(x);
   }, vector_to_list(array_of_numbers));
 }
-
-
-function play_sound(matrix_property, instrument_property) {
-
-    
-}
