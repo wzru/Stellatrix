@@ -1,16 +1,17 @@
-const matrix_num = 12;
+const matrix_row = 12;
+const matrix_col = 12;
 
-var chosen = new Array(matrix_num);
-for(let i = 0; i < matrix_num; i++) {
-    chosen[i] = new Array(matrix_num);
-    for(let j = 0; j < matrix_num; j++) {
+var chosen = new Array(matrix_row);
+for(let i = 0; i < matrix_row; i++) {
+    chosen[i] = new Array(matrix_col);
+    for(let j = 0; j < matrix_col; j++) {
         chosen[i][j] = false;
     }
 }
 
 matrix_property = {
-    "m_row":                matrix_num,
-    "m_col":                matrix_num,
+    "m_row":                matrix_row,
+    "m_col":                matrix_col,
     "matrix":               chosen
 }
 
@@ -24,11 +25,11 @@ instrument_property = {
 
 
 renderMatrix = () => {
-    for(let i = matrix_num - 1; i >= 0; i--) {
+    for(let i = matrix_row - 1; i >= 0; i--) {
         let newdiv = document.createElement("div");
         let class_value = i + "-row rows";
         newdiv.setAttribute("class", class_value);
-        for(let j = 0; j < matrix_num; j++) {
+        for(let j = 0; j < matrix_col; j++) {
             let newbutton = document.createElement("button");
             let click_value = "chooseButton(this)";
             let class_value = i + "-" + j;
@@ -41,10 +42,6 @@ renderMatrix = () => {
 }
 renderMatrix();
 
-test = (e) => {
-    e.style.backgroundColor = "blue";
-    console.log(e.style["background-color"]);
-}
 getRow = (str) => {
     let t = 0;
     while(str[t] != "-") {
@@ -60,10 +57,8 @@ getCol = (str) => {
     return str.slice(t + 1, str.length);
 }
 chooseButton = (e) => {
-    console.log(window.chosen);
     let row = getRow(e.className);
     let col = getCol(e.className);
-    console.log("row:",row,"col: ",col);
     if(chosen[row][col] === false) {
         chosen[row][col] = true;
         e.style.backgroundColor = "white"
@@ -74,3 +69,6 @@ chooseButton = (e) => {
     }
 }
 
+changeNumber = (e) => {
+    e.nextElementSibling.innerHTML = e.value;
+}
