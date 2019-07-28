@@ -1,12 +1,6 @@
 /*
-  Support for CS1101S Mission 15
-  Sound mission - Tone Matrix
-
-  Author:
-  v1 (2014/2015) Su Xuan - September 2014
-
-  Modifier:
-  v2 (2016/2017) Xiao Pu - September 2016 - fit source academy IDE
+  Modified from cadet-fronted
+  (https://github.com/source-academy/cadet-frontend/blob/master/public/externalLibs/sound/soundToneMatrix.js)
 */
 
 var $tone_matrix; // canvas container for tone matrix
@@ -511,7 +505,7 @@ function adsr(attack_time, decay_time, sustain_level, release_time) {
       if (x < attack_time) {
         return wave(x) * (x / attack_time);
       } else if (x < attack_time + decay_time) {
-        return ((exponential_decay(1 - sustain_level, decay_time))(x - attack_time) + sustain_level) * wave(x);
+        return ((1 - sustain_level) * (exponential_decay(decay_time))(x - attack_time) + sustain_level) * wave(x);
       } else if (x < duration - release_time) {
         return wave(x) * sustain_level;
       } else if (x <= duration) {
@@ -551,7 +545,7 @@ function stacking_adsr(waveform, base_frequency, duration, envelopes) {
       (x, y) => pair((tail(x))
 		     (waveform(base_frequency * head(x), duration))
 		     , y)
-      , []
+      , null
       , zip(envelopes, 1)));
 }
 
@@ -628,9 +622,23 @@ function cello(note, duration) {
       adsr(0, 0, 0.2, 0.3)));
 }
 
+function noise_sound(duration) {
+  return make_sound(t => Math.random() * 2 - 1, duration);
+}
+
+function drum(note, duration) {
+  return adsr(0.005, 0.495, 0, 0)(sine_sound(note, duration));
+}
+
 function string_to_list_of_numbers(string) {
   var array_of_numbers = string.split("");
   return map(function (x) {
     return parseInt(x);
   }, vector_to_list(array_of_numbers));
+}
+
+
+function play_sound(matrix_property, instrument_property) {
+
+    
 }
