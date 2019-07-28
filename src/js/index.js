@@ -9,7 +9,7 @@ var chosen = new Array(matrix_col);
 for(let i = 0; i < matrix_col; i++) {
     chosen[i] = new Array(matrix_row);
     for(let j = 0; j < matrix_row; j++) {
-        chosen[i][j] = false;
+        chosen[i][j] = 0;
     }
 }
 
@@ -22,7 +22,7 @@ matrix_property = {
 instrument_property = {
     "i_name":               "piano",
     "speed":                5,
-    "excusion":             0,
+    "excursion":             0,
     "force":                5
 }
 
@@ -61,12 +61,12 @@ getCol = (str) => {
 chooseButton = (e) => {
     let row = getRow(e.className);
     let col = getCol(e.className);
-    if(chosen[col][row] === false) {
-        chosen[col][row] = true;
+    if(chosen[col][row] === 0) {
+        chosen[col][row] = 1;
         e.style.backgroundColor = "white"
     }
     else {
-        chosen[col][row] = false;
+        chosen[col][row] = 0;
         e.style.backgroundColor = origin_color;
     }
 }
@@ -77,8 +77,8 @@ changeNumber = (e) => {
     if(property === "speed") {
         instrument_property.speed = parseInt(e.value);
     }
-    else if(property === "excusion") {
-        instrument_property.excusion = parseInt(e.value);
+    else if(property === "excursion") {
+        instrument_property.excursion = parseInt(e.value);
     }
     else if(property === "force") {
         instrument_property.force = parseInt(e.value);
@@ -89,7 +89,7 @@ clearAll = () => {
     //clear buttons
     for(let i = 0; i < matrix_col; i++) {
         for(let j = 0; j < matrix_row; j++) {
-            chosen[i][j] = false;
+            chosen[i][j] = 0;
             document.getElementsByClassName("buttons")[i * matrix_col + j].style.backgroundColor = origin_color;
         }
     }
@@ -100,7 +100,7 @@ clearAll = () => {
         document.getElementsByClassName("roll_bar")[i].childNodes[5].innerHTML = defaults[i];
     }
     instrument_property.speed = 5;
-    instrument_property.excusion = 0;
+    instrument_property.excursion = 0;
     instrument_property.force = 5;
 }
 
@@ -112,4 +112,7 @@ setInstrument = (e) => {
     e.className += " currentInstrument";
 }
 
-
+test = () => {
+    let music = make_stellatrix_sound(matrix_property, instrument_property);
+    play(music);
+} 
