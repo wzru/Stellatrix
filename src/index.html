@@ -14,15 +14,14 @@
             <!-- <img src="./src/images/logo.png" width="300px"> -->
         </div>
         <div class="instruments">
-            <span class="piano"></span>
-            <span class="drum"></span>
-            <span class="violin"></span>
+            <span class="trombone instrument" onclick="setInstrument(this)"><img src="images/trombone.svg" width="50px"><p>Trombone</p></span>
+            <span class="bell instrument" onclick="setInstrument(this)"><img src="images/bell.svg" width="50px"><p>Bell</p></span>
+            <span class="piano instrument currentInstrument" onclick="setInstrument(this)"><img src="images/piano.svg" width="50px"><p>Piano</p></span>
+            <span class="violin instrument" onclick="setInstrument(this)"><img src="images/violin.svg" width="50px"><p>Violin</p></span>
+            <span class="cello instrument" onclick="setInstrument(this)"><img src="images/cello.svg" width="50px"><p>Cello</p></span>
         </div>
         <div class="feature">
-            <button>new</button>
-            <button>save</button>
-            <button>play</button>
-            <button>clear</button>
+            <button onclick="clearAll()">clear</button>
         </div>
     </div><!--part1-->
 
@@ -35,18 +34,27 @@
             <div class="lists"></div>
         </div>
 
-        <div class="buttons">
+        <div class="launchpad">
         </div>
 
         <div class="property">
             <div>Property</div>
             <div class="roll_bar">
-                <p>当前位置0%</p>
-                <div class="bar">
-                    <div class="box"></div>
-                </div>
-            </div><!--滚动条-->
-        </div>
+                <span>Speed</span>
+                <input type="range" min="1" max="9" value="5" oninput="changeNumber(this)">
+                <span>5</span>
+            </div><!--rollbar-->
+            <div class="roll_bar">
+                <span>Excusion</span>
+                <input type="range" min="-36" max="36" value="0" oninput="changeNumber(this)">
+                <span>0</span>
+            </div><!--rollbar-->
+            <div class="roll_bar">
+                <span>Force</span>
+                <input type="range" min="1" max="9" value="5" oninput="changeNumber(this)">
+                <span>5</span>
+            </div><!--rollbar-->
+        </div><!--Property-->
     </div><!--part2-->
     <script src="js/index.js"></script>
 </body>

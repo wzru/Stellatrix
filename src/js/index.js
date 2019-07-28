@@ -1,10 +1,14 @@
 const matrix_row = 12;
 const matrix_col = 12;
 
-var chosen = new Array(matrix_row);
-for(let i = 0; i < matrix_row; i++) {
-    chosen[i] = new Array(matrix_col);
-    for(let j = 0; j < matrix_col; j++) {
+const origin_color = "rgb(42, 42, 42)";
+
+const defaults = [5, 0, 5];
+
+var chosen = new Array(matrix_col);
+for(let i = 0; i < matrix_col; i++) {
+    chosen[i] = new Array(matrix_row);
+    for(let j = 0; j < matrix_row; j++) {
         chosen[i][j] = false;
     }
 }
@@ -22,8 +26,6 @@ instrument_property = {
     "force":                5
 }
 
-
-
 renderMatrix = () => {
     for(let i = matrix_row - 1; i >= 0; i--) {
         let newdiv = document.createElement("div");
@@ -32,11 +34,11 @@ renderMatrix = () => {
         for(let j = 0; j < matrix_col; j++) {
             let newbutton = document.createElement("button");
             let click_value = "chooseButton(this)";
-            let class_value = i + "-" + j;
+            let class_value = i + "-" + j + " buttons";
             newbutton.setAttribute("onclick", click_value);
             newbutton.setAttribute("class", class_value);
             newdiv.appendChild(newbutton);
-            document.getElementsByClassName("buttons")[0].appendChild(newdiv);
+            document.getElementsByClassName("launchpad")[0].appendChild(newdiv);
         }
     }
 }
@@ -54,21 +56,60 @@ getCol = (str) => {
     while(str[t] != "-") {
         t--;
     }
-    return str.slice(t + 1, str.length);
+    return str.slice(t + 1, str.length - 8);
 }
 chooseButton = (e) => {
     let row = getRow(e.className);
     let col = getCol(e.className);
-    if(chosen[row][col] === false) {
-        chosen[row][col] = true;
+    if(chosen[col][row] === false) {
+        chosen[col][row] = true;
         e.style.backgroundColor = "white"
     }
     else {
-        chosen[row][col] = false;
-        e.style.backgroundColor = "rgb(42, 42, 42)";
+        chosen[col][row] = false;
+        e.style.backgroundColor = origin_color;
     }
 }
 
 changeNumber = (e) => {
     e.nextElementSibling.innerHTML = e.value;
+    let property = e.previousElementSibling.innerHTML.toLowerCase();
+    if(property === "speed") {
+        instrument_property.speed = parseInt(e.value);
+    }
+    else if(property === "excusion") {
+        instrument_property.excusion = parseInt(e.value);
+    }
+    else if(property === "force") {
+        instrument_property.force = parseInt(e.value);
+    }
 }
+
+clearAll = () => {
+    //clear buttons
+    for(let i = 0; i < matrix_col; i++) {
+        for(let j = 0; j < matrix_row; j++) {
+            chosen[i][j] = false;
+            document.getElementsByClassName("buttons")[i * matrix_col + j].style.backgroundColor = origin_color;
+        }
+    }
+    //clear properties
+    for(let i = 0; i < 3; i++) {
+        let inputbutton = document.getElementsByClassName("roll_bar")[i].childNodes[3];
+        inputbutton.value = defaults[i];
+        document.getElementsByClassName("roll_bar")[i].childNodes[5].innerHTML = defaults[i];
+    }
+    instrument_property.speed = 5;
+    instrument_property.excusion = 0;
+    instrument_property.force = 5;
+}
+
+setInstrument = (e) => {
+    instrument_property.i_name = e.childNodes[1].innerHTML.toLowerCase();
+    for(let i = 0; i < 5; i++) {
+        document.getElementsByClassName("instrument")[i].classList.remove("currentInstrument");
+    }
+    e.className += " currentInstrument";
+}
+
+
