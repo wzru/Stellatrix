@@ -1,12 +1,6 @@
 /*
-  Support for CS1101S Mission 15
-  Sound mission - Tone Matrix
-
-  Author:
-  v1 (2014/2015) Su Xuan - September 2014
-
-  Modifier:
-  v2 (2016/2017) Xiao Pu - September 2016 - fit source academy IDE
+  Modified from cadet-fronted
+  (https://github.com/source-academy/cadet-frontend/blob/master/public/externalLibs/sound/soundToneMatrix.js)
 */
 
 var $tone_matrix; // canvas container for tone matrix
@@ -626,6 +620,14 @@ function cello(note, duration) {
     list(adsr(0.1, 0, 1, 0.2),
       adsr(0.1, 0, 1, 0.3),
       adsr(0, 0, 0.2, 0.3)));
+}
+
+function noise_sound(duration) {
+  return make_sound(t => Math.random() * 2 - 1, duration);
+}
+
+function drum(note, duration) {
+  return adsr(0.005, 0.495, 0, 0)(sine_sound(note, duration));
 }
 
 function string_to_list_of_numbers(string) {
