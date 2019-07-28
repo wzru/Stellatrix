@@ -6,7 +6,7 @@
   some constant
 */
 const standard_note = 60;
-const quarter_note_time = 0.625;
+const quarter_note_time = 0.3125;
 
 
 var $tone_matrix; // canvas container for tone matrix
@@ -504,7 +504,8 @@ function exponential_decay(decay_period) {
  * @returns {function} envelope: function from sound to sound
  */
 function adsr(attack_time, decay_time, sustain_level, release_time, force_rate = 1.0) {
-  const result = sound => {
+ // const result = 
+  return sound => {
     var wave = get_wave(sound);
     var duration = get_duration(sound);
     return make_sound(x => {
@@ -521,7 +522,8 @@ function adsr(attack_time, decay_time, sustain_level, release_time, force_rate =
       }
     }, duration);
   };
-  return sound => { return make_sound(x => result(sound)(x) * force_rate); };
+  return result;
+  //return sound => { return make_sound(x => get_wave(result(sound))(x) * force_rate, get_duration(sound)); };
 }
 
 // waveform is a function that accepts freq, dur and returns sound
@@ -680,43 +682,46 @@ function stellatrix_cello(note, duration, force_rate = 1.0) {
       adsr(0, 0, 0.2, 0.3, force_rate)));
 }
 
+function make_unit_sound(i_name, note, duration, force_rate) {
+  function find_instrument(i_name) {
+    if (i_name === "trombone") {
+      return stellatrix_trombone;
+    }
+    else if (i_name === "bell") {
+      return stellatrix_bell;
+    }
+    else if (i_name === "cello") {
+      return stellatrix_cello;
+    }
+    else if (i_name === "violin") {
+      return stellatrix_violin;
+    }
+    else return stellatrix_piano
+  }
+  return find_instrument(i_name)(note, duration, force_rate);
+}
+
 function make_stellatrix_sound(matrix_property, instrument_property) {
   const list_2d = vector_to_list(matrix_property["matrix"]);
-  //console.log(matrix_property["matrix"]);  
-  //console.log(list_2d);
   const excursion = instrument_property["excursion"];
   const i_name = instrument_property["i_name"];
   const duration_rate = 5 / instrument_property["speed"];
   const force_rate = instrument_property["force"] / 5;
-  function make_unit_sound(i_name, note, duration, force) {
-    function find_instrument(i_name) {
-      if (i_name === "trombone") {
-        return stellatrix_trombone;
-      }
-      else if (i_name === "bell") {
-        return stellatrix_bell;
-      }
-      else if (i_name === "cello") {
-        return stellatrix_cello;
-      }
-      else if (i_name === "violin") {
-        return stellatrix_violin;
-      }
-      else return stellatrix_piano
-    }
-    return find_instrument(i_name)(note, duration, force_rate);
-  }
   function boolean_vector_to_sound(ba) {//处理第二维
     const lst = vector_to_list(ba);
-    //console.log(lst);
     function iter(result, rest, cnt) {
+      // console.log(result);
       // console.log(rest);
-      // console.log(is_null(rest));
+      // console.log(cnt);
+      // console.log(i_name);
+      // console.log(standard_note + cnt + excursion);
+      // console.log(quarter_note_time * duration_rate);
+      // console.log(force_rate);
+      // console.log("-------------------------------");
       if (rest.length===0) {
         return result;
       }
       else {
-        //console.log(rest);
         if (head(rest) === 1) {
           const tmp = pair(make_unit_sound(i_name,
             standard_note + cnt + excursion,
@@ -741,5 +746,6 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
       return iter(tmp, tail(rest));
     }
   }
+  //console.log(vector_to_list(head(list_2d)));
   return consecutively(iter(null, list_2d));
 }

@@ -20,11 +20,12 @@ function clickme() {
     i_p = {
         "i_name": "piano",
         "speed": 5,
-        "excusion": 0,
+        "excursion": 0,
         "force": 5
     };
     const m = make_stellatrix_sound(m_p, i_p);
     play(m);
+    //play(make_unit_sound(60, 1));
     //console.log(m);
     //play(sine_sound(700,1));
 }
