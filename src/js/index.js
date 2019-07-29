@@ -10,6 +10,8 @@ let is_stop = 1;
 let is_play = 0;
 
 let mouse_state = -1;
+let start_row = -1;
+let start_col = -1;
 
 //Two-dimensional array, if this button is chosen
 var chosen = new Array(matrix_col);
@@ -82,6 +84,8 @@ getCol = (str) => {
 mousedownButton = (e) => {
     let row = getRow(e.className);
     let col = getCol(e.className);
+    start_row = row;
+    start_col = col;
     if (chosen[col][row] === 0) {
         chosen[col][row] = 1;
         e.style.backgroundColor = "white"
@@ -98,6 +102,13 @@ mousedownButton = (e) => {
 mouseupButton = (e) => {
     let row = getRow(e.className);
     let col = getCol(e.className);
+    if(start_row === row && start_col === col)
+    {
+        start_row = -1;
+        start_col = -1;
+        mouse_state = -1;
+        return;
+    }
     if (chosen[col][row] === 0) {
         chosen[col][row] = 1;
         e.style.backgroundColor = "white"
