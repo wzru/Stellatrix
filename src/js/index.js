@@ -80,7 +80,7 @@ getCol = (str) => {
     return str.slice(t + 1, str.length - 8);
 }
 
-//change chosen array when you click a button
+// change chosen array when you click a button
 mousedownButton = (e) => {
     let row = getRow(e.className);
     let col = getCol(e.className);
@@ -98,14 +98,19 @@ mousedownButton = (e) => {
     }
     //tryPlaySound();
 }
+window.addEventListener("mouseup", function() {
+    start_row = -1;
+    start_col = -1;
+    mouse_state = -1;
+})
 
 mouseupButton = (e) => {
     let row = getRow(e.className);
     let col = getCol(e.className);
+    start_row = -1;
+    start_col = -1;
     if(start_row === row && start_col === col)
     {
-        start_row = -1;
-        start_col = -1;
         mouse_state = -1;
         return;
     }
@@ -179,7 +184,7 @@ function switchClearState() {
         }
     }
     //clear property rollbars
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
         let inputbutton = document.getElementsByClassName("roll_bar")[i].childNodes[3];
         inputbutton.value = defaults[i];
         document.getElementsByClassName("roll_bar")[i].childNodes[5].innerHTML = defaults[i];
@@ -192,7 +197,7 @@ function switchClearState() {
 
 //click reset button and set properties to default
 resetDefault = () => {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
         let inputbutton = document.getElementsByClassName("roll_bar")[i].childNodes[3];
         inputbutton.value = defaults[i];
         document.getElementsByClassName("roll_bar")[i].childNodes[5].innerHTML = defaults[i];
