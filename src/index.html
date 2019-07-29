@@ -21,7 +21,10 @@
             <span class="cello instrument" onclick="setInstrument(this)"><img src="images/cello.svg" width="50px"><p>Cello</p></span>
         </div>
         <div class="feature">
-            <button onclick="clearAll()">clear</button>
+            <button onclick="switchPlayState()">play</button>
+            <button id="loop_state", onclick="switchLoopState()">loop</button>
+            <button onclick="switchSaveState()">save</button>
+            <button onclick="switchClearState()">clear</button>
         </div>
     </div><!--part1-->
 
