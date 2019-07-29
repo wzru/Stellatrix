@@ -10,8 +10,9 @@ Then you can use `play(sound)` to play it.
 matrix_property = {
 	"m_row"   : integer,    // default value is 12
 	"m_col"   : integer,    // default value is 12
-	"matrix"  : boolean[][] // not clicked is FALSE; from left down to right up
-    						// first index is time(col), second is tone(row)
+	"matrix"  : int[][] // not clicked is FALSE; from left down to right up
+ 	// first index is time(col), second is tone(row)
+    // range between 0 and 1
 }
 ```
 

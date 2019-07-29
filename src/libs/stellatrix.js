@@ -5,7 +5,7 @@
 /*
   some constant
 */
-const standard_note = 60;
+const standard_note = 72;
 const quarter_note_time = 0.3125;
 
 
@@ -504,24 +504,25 @@ function exponential_decay(decay_period) {
  * @returns {function} envelope: function from sound to sound
  */
 function adsr(attack_time, decay_time, sustain_level, release_time, force_rate = 1.0) {
- // const result = 
-  return sound => {
-    var wave = get_wave(sound);
-    var duration = get_duration(sound);
-    return make_sound(x => {
-      if (x < attack_time) {
-        return wave(x) * (x / attack_time);
-      } else if (x < attack_time + decay_time) {
-        return ((1 - sustain_level) * (exponential_decay(decay_time))(x - attack_time) + sustain_level) * wave(x);
-      } else if (x < duration - release_time) {
-        return wave(x) * sustain_level;
-      } else if (x <= duration) {
-        return wave(x) * sustain_level * (exponential_decay(release_time))(x - (duration - release_time));
-      } else {
-        return 0;
-      }
-    }, duration);
-  };
+  const result =
+    //return 
+    sound => {
+      var wave = get_wave(sound);
+      var duration = get_duration(sound);
+      return make_sound(x => {
+        if (x < attack_time) {
+          return wave(x) * (x / attack_time);
+        } else if (x < attack_time + decay_time) {
+          return ((1 - sustain_level) * (exponential_decay(decay_time))(x - attack_time) + sustain_level) * wave(x);
+        } else if (x < duration - release_time) {
+          return wave(x) * sustain_level;
+        } else if (x <= duration) {
+          return wave(x) * sustain_level * (exponential_decay(release_time))(x - (duration - release_time));
+        } else {
+          return 0;
+        }
+      }, duration);
+    };
   return result;
   //return sound => { return make_sound(x => get_wave(result(sound))(x) * force_rate, get_duration(sound)); };
 }
@@ -710,15 +711,7 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
   function boolean_vector_to_sound(ba) {//处理第二维
     const lst = vector_to_list(ba);
     function iter(result, rest, cnt) {
-      // console.log(result);
-      // console.log(rest);
-      // console.log(cnt);
-      // console.log(i_name);
-      // console.log(standard_note + cnt + excursion);
-      // console.log(quarter_note_time * duration_rate);
-      // console.log(force_rate);
-      // console.log("-------------------------------");
-      if (rest.length===0) {
+      if (rest.length === 0) {
         return result;
       }
       else {
@@ -738,7 +731,7 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
     return simultaneously(iter(null, lst, 0));
   }
   function iter(result, rest) {//处理第一维
-    if (rest.length===0) {
+    if (rest.length === 0) {
       return result;
     }
     else {
@@ -746,6 +739,5 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
       return iter(tmp, tail(rest));
     }
   }
-  //console.log(vector_to_list(head(list_2d)));
-  return consecutively(iter(null, list_2d));
+  return consecutively(reverse(iter(null, list_2d)));
 }
