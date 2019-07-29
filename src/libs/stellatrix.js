@@ -724,7 +724,8 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
           return iter(tmp, tail(rest), cnt + 1);
         }
         else {
-          return iter(result, tail(rest), cnt + 1);
+          const tmp = pair(silence_sound(quarter_note_time * duration_rate), result);
+          return iter(tmp, tail(rest), cnt + 1);
         }
       }
     }
