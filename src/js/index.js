@@ -167,23 +167,23 @@ changeNumber = (e) => {
     tryPlaySound();
 }
 
-function switchPlayState() {
+switchPlayState = () => {
     tryPlaySound();
 }
 
-function switchLoopState() {
+switchLoopState = () => {
     is_loop = is_loop ^ 1;
-    if (document.getElementById('loop_state').innerHTML === "loop") {
-        document.getElementById('loop_state').innerHTML = "no loop";
+    if (document.getElementsByClassName('loop_state')[0].innerHTML === "loop") {
+        document.getElementsByClassName('loop_state')[0].innerHTML = "no loop";
     }
     else {
-        document.getElementById('loop_state').innerHTML = "loop";
+        document.getElementsByClassName('loop_state')[0].innerHTML = "loop";
     }
 }
 
 //click clear button and reset everything to default
-function switchClearState() {
-    document.getElementById('loop_state').innerHTML = "loop";
+switchClearState = () => {
+    document.getElementsByClassName('loop_state')[0].innerHTML = "loop";
     is_stop = 1;
     //clear buttons
     for (let i = 0; i < matrix_col; i++) {
@@ -227,7 +227,7 @@ setInstrument = (e) => {
     tryPlaySound();
 }
 
-function play_stellatrix_sound() {
+play_stellatrix_sound = () => {
     if (has_changed === 1) {
         sound = make_stellatrix_sound(matrix_property, instrument_property);
         has_changed = 0;
@@ -237,13 +237,8 @@ function play_stellatrix_sound() {
     if (is_loop === 1) tryPlaySound();
 }
 
-//when you click, play the music
-test = () => {
-    let music = make_stellatrix_sound(matrix_property, instrument_property);
-    play(music);
-}
 
-function tryPlaySound() {
+tryPlaySound = () => {
     function doTry() {
         if (is_play === 0) {
             is_play === 1;
