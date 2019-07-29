@@ -105,8 +105,10 @@ window.addEventListener("mouseup", function () {
     start_row = -1;
     start_col = -1;
     mouse_state = -1;
-    has_changed = 1;
-    tryPlaySound();
+    if (has_changed === 0) {
+        has_changed = 1;
+        tryPlaySound();
+    }
 })
 
 mouseupButton = (e) => {
@@ -182,7 +184,6 @@ function switchLoopState() {
 //click clear button and reset everything to default
 function switchClearState() {
     document.getElementById('loop_state').innerHTML = "loop";
-    is_loop = 0;
     is_stop = 1;
     //clear buttons
     for (let i = 0; i < matrix_col; i++) {
