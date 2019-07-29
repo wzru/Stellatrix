@@ -104,6 +104,17 @@ clearAll = () => {
     instrument_property.force = 5;
 }
 
+resetDefault = () => {
+    for(let i = 0; i < 3; i++) {
+        let inputbutton = document.getElementsByClassName("roll_bar")[i].childNodes[3];
+        inputbutton.value = defaults[i];
+        document.getElementsByClassName("roll_bar")[i].childNodes[5].innerHTML = defaults[i];
+    }
+    instrument_property.speed = 5;
+    instrument_property.excursion = 0;
+    instrument_property.force = 5;
+}
+
 setInstrument = (e) => {
     instrument_property.i_name = e.childNodes[1].innerHTML.toLowerCase();
     for(let i = 0; i < 5; i++) {
