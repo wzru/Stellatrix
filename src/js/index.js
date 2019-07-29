@@ -8,6 +8,8 @@ const defaults = [5, 0, 5];
 let is_loop = 1;
 let is_stop = 1;
 let is_play = 0;
+let has_changed = 1;
+let sound = null;
 
 let mouse_state = -1;
 let start_row = -1;
@@ -98,22 +100,24 @@ mousedownButton = (e) => {
     }
     //tryPlaySound();
 }
-window.addEventListener("mouseup", function() {
+
+window.addEventListener("mouseup", function () {
     start_row = -1;
     start_col = -1;
     mouse_state = -1;
+    has_changed = 1;
+    tryPlaySound();
 })
 
 mouseupButton = (e) => {
     let row = getRow(e.className);
     let col = getCol(e.className);
-    start_row = -1;
-    start_col = -1;
-    if(start_row === row && start_col === col)
-    {
+    if (start_row === row && start_col === col) {
         mouse_state = -1;
         return;
     }
+    start_row = -1;
+    start_col = -1;
     if (chosen[col][row] === 0) {
         chosen[col][row] = 1;
         e.style.backgroundColor = "white"
@@ -123,13 +127,14 @@ mouseupButton = (e) => {
         e.style.backgroundColor = origin_color;
     }
     mouse_state = -1;
-    //tryPlaySound();
+    has_changed = 1;
+    tryPlaySound();
 }
 
 mouseoverButton = (e) => {
     let row = getRow(e.className);
     let col = getCol(e.className);
-    if(mouse_state !== -1 && mouse_state !== chosen[col][row]) {
+    if (mouse_state !== -1 && mouse_state !== chosen[col][row]) {
         if (chosen[col][row] === 0) {
             chosen[col][row] = 1;
             e.style.backgroundColor = "white"
@@ -138,6 +143,8 @@ mouseoverButton = (e) => {
             chosen[col][row] = 0;
             e.style.backgroundColor = origin_color;
         }
+        has_changed = 1;
+        tryPlaySound();
     }
 }
 
@@ -154,6 +161,7 @@ changeNumber = (e) => {
     else if (property === "force") {
         instrument_property.force = parseInt(e.value);
     }
+    has_changed = 1;
     tryPlaySound();
 }
 
@@ -215,13 +223,17 @@ setInstrument = (e) => {
     }
     //change the current instrument's style
     e.className += " currentInstrument";
+    tryPlaySound();
 }
 
 function play_stellatrix_sound() {
-    let sound = make_stellatrix_sound(matrix_property, instrument_property);
+    if (has_changed === 1) {
+        sound = make_stellatrix_sound(matrix_property, instrument_property);
+        has_changed = 0;
+    }
     play(sound);
     is_play = 0;
-    if(is_loop === 1) tryPlaySound();
+    if (is_loop === 1) tryPlaySound();
 }
 
 //when you click, play the music
@@ -230,10 +242,12 @@ test = () => {
     play(music);
 }
 
-
 function tryPlaySound() {
-    if(is_play === 0) {
-        is_play === 1;
-        setTimeout(play_stellatrix_sound, 0);
+    function doTry() {
+        if (is_play === 0) {
+            is_play === 1;
+            setTimeout(play_stellatrix_sound, 0);
+        }
     }
+    setTimeout(doTry, 0);
 }
