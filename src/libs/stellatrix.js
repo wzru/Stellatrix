@@ -655,8 +655,8 @@ function stellatrix_adsr(standard_time, attack_time, decay_time, sustain_level, 
 
 function stellatrix_trombone(note, duration, force_rate = 1.0) {
   return stacking_adsr(square_sound, midi_note_to_frequency(note), duration,
-    list(stellatrix_adsr(1, 0.4, 0, 1, 0, force_rate),
-      stellatrix_adsr(1, 0.6472, 1.2, 0, 0, force_rate)));
+    list(adsr(0.4, 0, 1, 0, force_rate),
+      adsr(0.6472, 1.2, 0, 0, force_rate)));
 }
 
 function stellatrix_piano(note, duration, force_rate = 1.0) {
@@ -668,25 +668,25 @@ function stellatrix_piano(note, duration, force_rate = 1.0) {
 
 function stellatrix_bell(note, duration, force_rate = 1.0) {
   return stacking_adsr(square_sound, midi_note_to_frequency(note), duration,
-    list(adsr(1, 0, 1.2, 0, 0, force_rate),
-    adsr(1, 0, 1.3236, 0, 0, force_rate),
-    adsr(1, 0, 1.5236, 0, 0, force_rate),
-    adsr(1, 0, 1.8142, 0, 0, force_rate)));
+    list(adsr(0, 1.2, 0, 0, force_rate),
+      adsr(0, 1.3236, 0, 0, force_rate),
+      adsr(0, 1.5236, 0, 0, force_rate),
+      adsr(0, 1.8142, 0, 0, force_rate)));
 }
 
 function stellatrix_violin(note, duration, force_rate = 1.0) {
   return stacking_adsr(sawtooth_sound, midi_note_to_frequency(note), duration,
     list(stellatrix_adsr(1.5, 0.7, 0, 1, 0.3, force_rate),
-    stellatrix_adsr(1.5, 0.7, 0, 1, 0.3, force_rate),
-    stellatrix_adsr(1.5, 0.9, 0, 1, 0.3, force_rate),
-    stellatrix_adsr(1.5, 0.9, 0, 1, 0.3, force_rate)));
+      stellatrix_adsr(1.5, 0.7, 0, 1, 0.3, force_rate),
+      stellatrix_adsr(1.5, 0.9, 0, 1, 0.3, force_rate),
+      stellatrix_adsr(1.5, 0.9, 0, 1, 0.3, force_rate)));
 }
 
 function stellatrix_cello(note, duration, force_rate = 1.0) {
   return stacking_adsr(square_sound, midi_note_to_frequency(note), duration,
-    list(stellatrix_adsr(1, 0.1, 0, 1, 0.2, force_rate),
-    stellatrix_adsr(1, 0.1, 0, 1, 0.3, force_rate),
-    stellatrix_adsr(1, 0, 0, 0.2, 0.3, force_rate)));
+    list(adsr(0.1, 0, 1, 0.2, force_rate),
+      adsr(0.1, 0, 1, 0.3, force_rate),
+      adsr(0, 0, 0.2, 0.3, force_rate)));
 }
 
 function make_unit_sound(i_name, note, duration, force_rate) {
