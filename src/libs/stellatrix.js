@@ -7,7 +7,7 @@
 */
 const standard_note_name = "C4";
 const standard_note = letter_name_to_midi_note(standard_note_name);
-const quarter_note_time = 0.3125;
+const single_note_time = 0.625;
 
 
 var $tone_matrix; // canvas container for tone matrix
@@ -648,10 +648,15 @@ function string_to_list_of_numbers(string) {
   }, vector_to_list(array_of_numbers));
 }
 
+function stellatrix_adsr(standard_time, attack_time, decay_time, sustain_level, release_time, force_rate = 1.0) {
+  const scale_rate = single_note_time / standard_time;
+  return adsr(attack_time * scale_rate, decay_time * scale_rate, sustain_level, release_time * scale_rate);
+}
+
 function stellatrix_trombone(note, duration, force_rate = 1.0) {
   return stacking_adsr(square_sound, midi_note_to_frequency(note), duration,
-    list(adsr(0.4, 0, 1, 0, force_rate),
-      adsr(0.6472, 1.2, 0, 0, force_rate)));
+    list(stellatrix_adsr(1, 0.4, 0, 1, 0, force_rate),
+      stellatrix_adsr(1, 0.6472, 1.2, 0, 0, force_rate)));
 }
 
 function stellatrix_piano(note, duration, force_rate = 1.0) {
@@ -663,25 +668,25 @@ function stellatrix_piano(note, duration, force_rate = 1.0) {
 
 function stellatrix_bell(note, duration, force_rate = 1.0) {
   return stacking_adsr(square_sound, midi_note_to_frequency(note), duration,
-    list(adsr(0, 1.2, 0, 0, force_rate),
-      adsr(0, 1.3236, 0, 0, force_rate),
-      adsr(0, 1.5236, 0, 0, force_rate),
-      adsr(0, 1.8142, 0, 0, force_rate)));
+    list(adsr(1, 0, 1.2, 0, 0, force_rate),
+    adsr(1, 0, 1.3236, 0, 0, force_rate),
+    adsr(1, 0, 1.5236, 0, 0, force_rate),
+    adsr(1, 0, 1.8142, 0, 0, force_rate)));
 }
 
 function stellatrix_violin(note, duration, force_rate = 1.0) {
   return stacking_adsr(sawtooth_sound, midi_note_to_frequency(note), duration,
-    list(adsr(0.7, 0, 1, 0.3, force_rate),
-      adsr(0.7, 0, 1, 0.3, force_rate),
-      adsr(0.9, 0, 1, 0.3, force_rate),
-      adsr(0.9, 0, 1, 0.3, force_rate)));
+    list(stellatrix_adsr(1.5, 0.7, 0, 1, 0.3, force_rate),
+    stellatrix_adsr(1.5, 0.7, 0, 1, 0.3, force_rate),
+    stellatrix_adsr(1.5, 0.9, 0, 1, 0.3, force_rate),
+    stellatrix_adsr(1.5, 0.9, 0, 1, 0.3, force_rate)));
 }
 
 function stellatrix_cello(note, duration, force_rate = 1.0) {
   return stacking_adsr(square_sound, midi_note_to_frequency(note), duration,
-    list(adsr(0.1, 0, 1, 0.2, force_rate),
-      adsr(0.1, 0, 1, 0.3, force_rate),
-      adsr(0, 0, 0.2, 0.3, force_rate)));
+    list(stellatrix_adsr(1, 0.1, 0, 1, 0.2, force_rate),
+    stellatrix_adsr(1, 0.1, 0, 1, 0.3, force_rate),
+    stellatrix_adsr(1, 0, 0, 0.2, 0.3, force_rate)));
 }
 
 function make_unit_sound(i_name, note, duration, force_rate) {
@@ -698,7 +703,7 @@ function make_unit_sound(i_name, note, duration, force_rate) {
     else if (i_name === "violin") {
       return stellatrix_violin;
     }
-    else return stellatrix_piano
+    else return stellatrix_piano;
   }
   return find_instrument(i_name)(note, duration, force_rate);
 }
@@ -753,13 +758,13 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
         if (head(rest) === 1) {
           const tmp = pair(make_unit_sound(i_name,
             calcNote(standard_note, cnt, excursion),
-            quarter_note_time * duration_rate,
+            single_note_time * duration_rate,
             force_rate),
             result);
           return iter(tmp, tail(rest), cnt + 1);
         }
         else {
-          const tmp = pair(silence_sound(quarter_note_time * duration_rate), result);
+          const tmp = pair(silence_sound(single_note_time * duration_rate), result);
           return iter(tmp, tail(rest), cnt + 1);
         }
       }
@@ -775,5 +780,5 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
       return iter(tmp, tail(rest));
     }
   }
-  return interleavingly(reverse(iter(null, list_2d)), 3/4);
+  return interleavingly(reverse(iter(null, list_2d)), 3 / 4);
 }
