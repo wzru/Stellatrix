@@ -1,5 +1,5 @@
-const matrix_row = 12;
-const matrix_col = 12;
+const matrix_row = 14;
+const matrix_col = 14;
 //button's origion color
 const origin_color = "rgb(42, 42, 42)";
 //default speed, excursion and force
@@ -15,6 +15,8 @@ let mouse_state = -1;
 let start_row = -1;
 let start_col = -1;
 
+let current_music = -1;
+
 //Two-dimensional array, if this button is chosen
 var chosen = new Array(matrix_col);
 for (let i = 0; i < matrix_col; i++) {
@@ -23,6 +25,8 @@ for (let i = 0; i < matrix_col; i++) {
         chosen[i][j] = 0;
     }
 }
+
+var music_list = [];
 
 matrix_property = {
     "m_row": matrix_row,
@@ -36,6 +40,10 @@ instrument_property = {
     "excursion": 0,
     "force": 5
 }
+
+let curdiv = document.getElementsByClassName("current_music")[0];
+let newtext = document.createTextNode("current music is " + current_music);
+curdiv.appendChild(newtext);
 
 //render buttons on this page
 renderMatrix = () => {
@@ -180,6 +188,52 @@ switchLoopState = () => {
         document.getElementsByClassName('loop_state')[0].innerHTML = "loop";
     }
 }
+switchNewState = () => {
+    switchSaveState();
+    switchClearState();
+    current_music = -1;
+}
+switchSaveState = () => {
+    let m_prop = {};
+    let i_prop = {};
+    let c = new Array(matrix_col);
+    for (let i = 0; i < matrix_col; i++) {
+        c[i] = new Array(matrix_row);
+        for (let j = 0; j < matrix_row; j++) {
+            c[i][j] = chosen[i][j];
+        }
+    }
+    m_prop.m_row = matrix_property.m_row;
+    m_prop.m_col = matrix_property.m_col;
+    m_prop.matrix = c;
+    i_prop.i_name = instrument_property.i_name;
+    i_prop.speed = instrument_property.speed;
+    i_prop.excursion = instrument_property.excursion;
+    i_prop.force = instrument_property.force;
+
+    if(current_music === -1) {
+        let num = music_list.length;
+        current_music = num;
+        let music_fragment = {
+            "music_id":         num,
+            "m_prop":           m_prop,
+            "i_prop":           i_prop
+        }
+        music_list.push(music_fragment);
+        let newdiv = document.getElementsByClassName("num" + num)[0];
+        let newp = document.createElement("p");
+        let newtext = document.createTextNode(num + 1 + ". " + i_prop.i_name);
+        newp.appendChild(newtext);
+        newdiv.appendChild(newp);
+        console.log(music_list);
+    }
+    else {
+        let num = current_music;
+        music_list[num].m_prop = m_prop;
+        music_list[num].i_prop = i_prop;
+        console.log(music_list);
+    }
+}
 
 //click clear button and reset everything to default
 switchClearState = () => {
@@ -189,7 +243,7 @@ switchClearState = () => {
     for (let i = 0; i < matrix_col; i++) {
         for (let j = 0; j < matrix_row; j++) {
             chosen[i][j] = 0;
-            document.getElementsByClassName("buttons")[i * matrix_col + j].style.backgroundColor = origin_color;
+            document.getElementsByClassName("buttons")[(matrix_row - j - 1) * matrix_col + i].style.backgroundColor = origin_color;
         }
     }
     //clear property rollbars
@@ -202,6 +256,31 @@ switchClearState = () => {
     instrument_property.speed = 5;
     instrument_property.excursion = 0;
     instrument_property.force = 5;
+}
+
+chooseMelody = (e) => {
+    let num = e.getAttribute("data-num");
+    current_music = num;
+    //调整launchpad
+    for(let i = 0; i < matrix_col; i++) {
+        for(let j = 0; j < matrix_row; j++) {
+            chosen[i][j] = music_list[num].m_prop.matrix[i][j];
+            if(chosen[i][j] === 0) {
+                document.getElementsByClassName("buttons")[(matrix_row - j - 1) * matrix_col + i].style.backgroundColor = origin_color;
+            }
+            else {
+                document.getElementsByClassName("buttons")[(matrix_row - j - 1) * matrix_col + i].style.backgroundColor = "white";
+            }
+        }
+    }
+    matrix_property = music_list[num].m_prop;
+    instrument_property = music_list[num].i_prop;
+    //调整乐器栏
+    for (let i = 0; i < 5; i++) {
+        document.getElementsByClassName("instrument")[i].classList.remove("currentInstrument");
+    }
+    let cur_instrument = document.getElementsByClassName(music_list[num].i_prop.i_name)[0];
+    cur_instrument.className += " currentInstrument";
 }
 
 //click reset button and set properties to default

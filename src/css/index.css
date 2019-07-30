@@ -52,6 +52,9 @@ input {
     box-shadow:                                 .1px .1px 8px white;
     background-color:                           rgb(30, 32, 32);
 }
+.currentList {
+    background-color:                           #fff;
+}
 .rows {
     display:                                    flex;
     flex-direction:                             row;
