@@ -702,8 +702,21 @@ function make_unit_sound(i_name, note, duration, force_rate) {
   return find_instrument(i_name)(note, duration, force_rate);
 }
 
+function removeSilence(matrix) {
+  function isAll0(arr) {
+    for(let i = 0; i < arr.length; i++) {
+      if(arr[i]!==0) return false;
+    }
+    return true;
+  }
+  while(matrix.length>0 && isAll0(matrix[0])) matrix.shift();
+  while(matrix.length>0 && isAll0(matrix[matrix.length - 1])) matrix.pop();
+  return matrix;
+}
+
 function make_stellatrix_sound(matrix_property, instrument_property) {
-  const list_2d = vector_to_list(matrix_property["matrix"]);
+  let matrix = [...matrix_property["matrix"]];
+  const list_2d = vector_to_list(removeSilence(matrix));
   const excursion = instrument_property["excursion"];
   const i_name = instrument_property["i_name"];
   const duration_rate = 5 / instrument_property["speed"];
