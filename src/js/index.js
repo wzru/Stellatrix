@@ -5,11 +5,8 @@ const origin_color = "rgb(42, 42, 42)";
 //default speed, excursion and force
 const defaults = [5, 0, 5];
 
-let is_loop = 1;
-let is_stop = 1;
-let is_play = 0;
-let has_changed = 1;
 let sound = null;
+let is_play = 0;
 
 let mouse_state = -1;
 let start_row = -1;
@@ -40,10 +37,6 @@ instrument_property = {
     "excursion": 0,
     "force": 5
 }
-
-let curdiv = document.getElementsByClassName("current_music")[0];
-let newtext = document.createTextNode("current music is " + current_music);
-curdiv.appendChild(newtext);
 
 //render buttons on this page
 renderMatrix = () => {
@@ -106,16 +99,13 @@ mousedownButton = (e) => {
         e.style.backgroundColor = origin_color;
         mouse_state = 0;
     }
-    //tryPlaySound();
 }
 
 window.addEventListener("mouseup", function () {
-    start_row = -1;
-    start_col = -1;
-    mouse_state = -1;
-    if (has_changed === 0) {
-        has_changed = 1;
-        tryPlaySound();
+    if (mouse_state !== -1) {
+        start_row = -1;
+        start_col = -1;
+        mouse_state = -1;
     }
 })
 
@@ -128,17 +118,18 @@ mouseupButton = (e) => {
     }
     start_row = -1;
     start_col = -1;
-    if (chosen[col][row] === 0) {
-        chosen[col][row] = 1;
-        e.style.backgroundColor = "white"
+    if(mouse_state !== chosen[col][row]) {
+        if (chosen[col][row] === 0) {
+            chosen[col][row] = 1;
+            e.style.backgroundColor = "white"
+        }
+        else {
+            chosen[col][row] = 0;
+            e.style.backgroundColor = origin_color;
+        }
     }
-    else {
-        chosen[col][row] = 0;
-        e.style.backgroundColor = origin_color;
-    }
+    
     mouse_state = -1;
-    has_changed = 1;
-    tryPlaySound();
 }
 
 mouseoverButton = (e) => {
@@ -153,8 +144,6 @@ mouseoverButton = (e) => {
             chosen[col][row] = 0;
             e.style.backgroundColor = origin_color;
         }
-        has_changed = 1;
-        tryPlaySound();
     }
 }
 
@@ -172,27 +161,32 @@ changeNumber = (e) => {
         instrument_property.force = parseInt(e.value);
     }
     has_changed = 1;
-    tryPlaySound();
 }
 
 switchPlayState = () => {
     tryPlaySound();
 }
 
-switchLoopState = () => {
-    is_loop = is_loop ^ 1;
-    if (document.getElementsByClassName('loop_state')[0].innerHTML === "loop") {
-        document.getElementsByClassName('loop_state')[0].innerHTML = "no loop";
-    }
-    else {
-        document.getElementsByClassName('loop_state')[0].innerHTML = "loop";
-    }
-}
 switchNewState = () => {
     switchSaveState();
     switchClearState();
     current_music = -1;
+
+    let lists = document.getElementsByClassName("lists");
+    let length = lists.length;
+    console.log("length:", length);
+    for (let i = 0; i < length; i++) {
+        lists[i].classList.remove("currentList");
+    }
+    let num = music_list.length;
+    let newdiv = document.createElement("div");
+    let class_value = "lists num" + num + " currentList";
+    newdiv.setAttribute("class", class_value);
+    newdiv.setAttribute("onmousedown", "chooseMelody(this)");
+    newdiv.setAttribute("data-num", num);
+    document.getElementsByClassName("melody_list")[0].appendChild(newdiv);
 }
+
 switchSaveState = () => {
     let m_prop = {};
     let i_prop = {};
@@ -211,33 +205,58 @@ switchSaveState = () => {
     i_prop.excursion = instrument_property.excursion;
     i_prop.force = instrument_property.force;
 
-    if(current_music === -1) {
+    if (current_music === -1) {
         let num = music_list.length;
         current_music = num;
         let music_fragment = {
-            "music_id":         num,
-            "m_prop":           m_prop,
-            "i_prop":           i_prop
+            "music_id": num,
+            "m_prop": m_prop,
+            "i_prop": i_prop
         }
         music_list.push(music_fragment);
+        //渲染music_list
         let newdiv = document.getElementsByClassName("num" + num)[0];
-        let newp = document.createElement("p");
-        let newtext = document.createTextNode(num + 1 + ". " + i_prop.i_name);
-        newp.appendChild(newtext);
-        newdiv.appendChild(newp);
-        console.log(music_list);
+        if(newdiv.childNodes[0] === undefined) {
+            let input_value = num + 1 + ". " + i_prop.i_name;
+            let newinput = document.createElement("input");
+            newinput.setAttribute("value", input_value);
+            newinput.setAttribute("ondblclick", "removeBlur(this)");
+            newinput.setAttribute("onfocus", "this.blur()");
+            newinput.setAttribute("onblur", "setBlur(this)");
+            newdiv.appendChild(newinput);
+            let newdel = document.createElement("span");
+            let del_value = document.createTextNode("×");
+            newdel.appendChild(del_value);
+            newdel.setAttribute("class", "del");
+            newdel.setAttribute("onclick", "delMelody(this)");
+            newdiv.appendChild(newdel);
+        }
     }
     else {
         let num = current_music;
         music_list[num].m_prop = m_prop;
         music_list[num].i_prop = i_prop;
-        console.log(music_list);
+
+        let newdiv = document.getElementsByClassName("num" + num)[0];
+        if(newdiv.childNodes[0] === undefined) {
+            let input_value = num + 1 + ". " + i_prop.i_name;
+            let newinput = document.createElement("input");
+            newinput.setAttribute("value", input_value);
+            newinput.setAttribute("ondblclick", "removeBlur(this)");
+            newinput.setAttribute("onfocus", "this.blur()");
+            newinput.setAttribute("onblur", "setBlur(this)");
+            newdiv.appendChild(newinput);
+            let newdel = document.createElement("span");
+            let del_value = document.createTextNode("×");
+            newdel.appendChild(del_value);
+            newdel.setAttribute("class", "del");
+            newdel.setAttribute("onclick", "delMelody(this)");
+            newdiv.appendChild(newdel);
+        }
     }
 }
-
 //click clear button and reset everything to default
 switchClearState = () => {
-    document.getElementsByClassName('loop_state')[0].innerHTML = "loop";
     is_stop = 1;
     //clear buttons
     for (let i = 0; i < matrix_col; i++) {
@@ -246,41 +265,80 @@ switchClearState = () => {
             document.getElementsByClassName("buttons")[(matrix_row - j - 1) * matrix_col + i].style.backgroundColor = origin_color;
         }
     }
-    //clear property rollbars
-    for (let i = 0; i < 2; i++) {
-        let inputbutton = document.getElementsByClassName("roll_bar")[i].childNodes[3];
-        inputbutton.value = defaults[i];
-        document.getElementsByClassName("roll_bar")[i].childNodes[5].innerHTML = defaults[i];
-    }
-    //clear property numbers
-    instrument_property.speed = 5;
-    instrument_property.excursion = 0;
-    instrument_property.force = 5;
+    resetDefault();
+}
+// render_list = () => {
+//     let length = music_list.length;
+//     for(let i = 0; i < length; i++) {
+
+//     }
+// }
+removeBlur = (e) => {
+    e.removeAttribute("onfocus");
+    e.focus();
+}
+setBlur = (e) => {
+    e.setAttribute("onfocus", "this.blur()");
+}
+
+delMelody = (e) => {
+    let del_num = e.parentNode.getAttribute("data-num");
+    // music_list.splice(del_num, 1);
+    e.parentNode.parentNode.removeChild(document.getElementsByClassName("num" + del_num)[0]);
+    switchClearState();
+
+    current_music = -1;
 }
 
 chooseMelody = (e) => {
-    let num = e.getAttribute("data-num");
-    current_music = num;
-    //调整launchpad
-    for(let i = 0; i < matrix_col; i++) {
-        for(let j = 0; j < matrix_row; j++) {
-            chosen[i][j] = music_list[num].m_prop.matrix[i][j];
-            if(chosen[i][j] === 0) {
-                document.getElementsByClassName("buttons")[(matrix_row - j - 1) * matrix_col + i].style.backgroundColor = origin_color;
-            }
-            else {
-                document.getElementsByClassName("buttons")[(matrix_row - j - 1) * matrix_col + i].style.backgroundColor = "white";
+    let lists = document.getElementsByClassName("lists");
+    let length = lists.length;
+    for (let i = 0; i < length; i++) {
+        lists[i].classList.remove("currentList");
+    }
+    e.classList.add("currentList");
+    
+    //如果当前列表未存储片段
+    if(e.childNodes[0] === undefined) {
+        current_music = -1;
+        switchClearState();
+    }
+    else {
+        let num = e.getAttribute("data-num");
+        current_music = num;
+        let cur_m_prop = music_list[num].m_prop;
+        let cur_i_prop = music_list[num].i_prop;
+        //调整launchpad
+        for (let i = 0; i < matrix_col; i++) {
+            for (let j = 0; j < matrix_row; j++) {
+                chosen[i][j] = music_list[num].m_prop.matrix[i][j];
+                if (chosen[i][j] === 0) {
+                    document.getElementsByClassName("buttons")[(matrix_row - j - 1) * matrix_col + i].style.backgroundColor = origin_color;
+                }
+                else {
+                    document.getElementsByClassName("buttons")[(matrix_row - j - 1) * matrix_col + i].style.backgroundColor = "white";
+                }
             }
         }
+        matrix_property = cur_m_prop;
+        instrument_property = cur_i_prop;
+        //调整乐器栏
+        for (let i = 0; i < 5; i++) {
+            document.getElementsByClassName("instrument")[i].classList.remove("currentInstrument");
+        }
+        let cur_instrument = document.getElementsByClassName(cur_i_prop.i_name)[0];
+        cur_instrument.className += " currentInstrument";
+        //调整properties
+        let values = [];
+        values.push(cur_i_prop.speed);
+        values.push(cur_i_prop.excursion);
+        for (let i = 0; i < 2; i++) {
+            let inputbutton = document.getElementsByClassName("roll_bar")[i].childNodes[3];
+            inputbutton.value = values[i];
+            document.getElementsByClassName("roll_bar")[i].childNodes[5].innerHTML = values[i];
+        }
     }
-    matrix_property = music_list[num].m_prop;
-    instrument_property = music_list[num].i_prop;
-    //调整乐器栏
-    for (let i = 0; i < 5; i++) {
-        document.getElementsByClassName("instrument")[i].classList.remove("currentInstrument");
-    }
-    let cur_instrument = document.getElementsByClassName(music_list[num].i_prop.i_name)[0];
-    cur_instrument.className += " currentInstrument";
+    
 }
 
 //click reset button and set properties to default
@@ -303,24 +361,18 @@ setInstrument = (e) => {
     }
     //change the current instrument's style
     e.className += " currentInstrument";
-    tryPlaySound();
 }
 
 play_stellatrix_sound = () => {
-    if (has_changed === 1) {
-        sound = make_stellatrix_sound(matrix_property, instrument_property);
-        has_changed = 0;
-    }
+    sound = make_stellatrix_sound(matrix_property, instrument_property);
     play(sound);
     is_play = 0;
-    if (is_loop === 1) tryPlaySound();
 }
-
 
 tryPlaySound = () => {
     function doTry() {
         if (is_play === 0) {
-            is_play === 1;
+            is_play = 1;
             setTimeout(play_stellatrix_sound, 0);
         }
     }

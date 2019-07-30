@@ -35,7 +35,7 @@ input {
     padding:                                    5px;
 }
 .currentInstrument {
-    box-shadow: 1px 1px 5px gray;
+    box-shadow:                                 1px 1px 5px gray;
 }
 .feature {
     width:                                      500px;
@@ -46,15 +46,35 @@ input {
     justify-content:                            space-around;
     align-items:                                center;
 }
+.melody_list {
+    /* position:                                   fixed; */
+    left:                                       20px;
+    margin:                                     0px 200px 0px 0px;
+    height:                                     400px;
+    width:                                      200px;
+    overflow-y:                                 scroll;
+    overflow-x:                                 hidden;
+}
+::-webkit-scrollbar {
+    display:                                    none;
+}
 .lists {
     height:                                     80px;
     width:                                      200px;
     box-shadow:                                 .1px .1px 8px white;
     background-color:                           rgb(30, 32, 32);
+    display:                                    flex;
+    align-items:                                center;
+    justify-content:                            space-around;
 }
 .currentList {
-    background-color:                           #fff;
+    background-color:                           rgb(73, 70, 70);
 }
+.lists .del:hover{
+    cursor:                                     pointer;
+    color:                                      rgb(248, 53, 53);
+}
+
 .rows {
     display:                                    flex;
     flex-direction:                             row;

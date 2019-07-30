@@ -5,7 +5,8 @@
 /*
   some constant
 */
-const standard_note = 72;
+const standard_note_name = "C4";
+const standard_note = letter_name_to_midi_note(standard_note_name);
 const quarter_note_time = 0.3125;
 
 
@@ -371,7 +372,7 @@ function clear_all_timeout() {
 function letter_name_to_midi_note(note) {
   // we don't consider double flat/ double sharp
   var note = note.split("");
-  var res = 12; //MIDI notes for mysterious C0
+  var res = 24; //MIDI notes for mysterious C0
   var n = note[0].toUpperCase();
   switch (n) {
     case 'D':
@@ -702,16 +703,37 @@ function make_unit_sound(i_name, note, duration, force_rate) {
   return find_instrument(i_name)(note, duration, force_rate);
 }
 
+//remove the front and the end silence sound
 function removeSilence(matrix) {
   function isAll0(arr) {
-    for(let i = 0; i < arr.length; i++) {
-      if(arr[i]!==0) return false;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] !== 0) return false;
     }
     return true;
   }
-  while(matrix.length>0 && isAll0(matrix[0])) matrix.shift();
-  while(matrix.length>0 && isAll0(matrix[matrix.length - 1])) matrix.pop();
+  while (matrix.length > 0 && isAll0(matrix[0])) matrix.shift();
+  while (matrix.length > 0 && isAll0(matrix[matrix.length - 1])) matrix.pop();
   return matrix;
+}
+
+
+//calculate the TRUE note that the button stands
+function calcNote(standard_note_name, cnt, excursion) {
+  const curScale = 4;
+  const curLetter = 0;//means 'C' or 'Do'
+  const letter_to_number = {
+    'C': 0,
+    'D': 1,
+    'E': 2,
+    'F': 3,
+    'G': 4,
+    'A': 5,
+    'B': 6,
+  };
+  const number_to_letter = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+  const scale = curScale + Math.floor((cnt + excursion) / 7);
+  const number = curLetter + (cnt + excursion - Math.floor((cnt + excursion) / 7) * 7);
+  return letter_name_to_midi_note(number_to_letter[number] + (scale + ''));
 }
 
 function make_stellatrix_sound(matrix_property, instrument_property) {
@@ -730,7 +752,7 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
       else {
         if (head(rest) === 1) {
           const tmp = pair(make_unit_sound(i_name,
-            standard_note + cnt + excursion,
+            calcNote(standard_note, cnt, excursion),
             quarter_note_time * duration_rate,
             force_rate),
             result);

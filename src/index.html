@@ -8,7 +8,6 @@
     <link href="./css/index.css" rel="stylesheet">
 </head>
 <body>
-    <div class="current_music"></div>
     <div class="part1">
         <div class="logo">
             <!-- <img src="./src/images/logo.png" width="300px"> -->
@@ -22,7 +21,6 @@
         </div>
         <div class="feature">
             <button onclick="switchPlayState()">play</button>
-            <button onclick="switchLoopState()" class="loop_state">loop</button>
             <button onclick="switchNewState()">new</button>
             <button onclick="switchSaveState()">save</button>
             <button onclick="switchClearState()">clear</button>
@@ -31,11 +29,7 @@
 
     <div class="part2">
         <div class="melody_list">
-            <div class="lists num0" onmousedown="chooseMelody(this)" data-num="0"></div>
-            <div class="lists num1" onmousedown="chooseMelody(this)" data-num="1"></div>
-            <div class="lists num2" onmousedown="chooseMelody(this)" data-num="2"></div>
-            <div class="lists num3" onmousedown="chooseMelody(this)" data-num="3"></div>
-            <div class="lists num4" onmousedown="chooseMelody(this)" data-num="4"></div>
+            <div class="lists num0 currentList" onmousedown="chooseMelody(this)" data-num="0"></div>
         </div>
 
         <div class="launchpad">
@@ -67,6 +61,7 @@
     <script type="text/javascript" src="./libs/riffwave.js"></script>
     <script type="text/javascript" src="./libs/sounds.js"></script>
     <script type="text/javascript" src="./libs/stellatrix.js"></script>
+    <script type="text/javascript" src="./libs/zepto.js"></script>
     <script src="js/index.js"></script>
     <script src="js/test.js"></script>
 </body>
