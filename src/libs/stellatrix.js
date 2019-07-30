@@ -775,5 +775,5 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
       return iter(tmp, tail(rest));
     }
   }
-  return consecutively(reverse(iter(null, list_2d)));
+  return interleavingly(reverse(iter(null, list_2d)), 3/4);
 }
