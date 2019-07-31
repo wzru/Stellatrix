@@ -1,5 +1,5 @@
-const timelineLength = 600; //timeline长度(左右)
-const timelineWidth = 200;  //timeline宽度(上下)
+const timelineLength = 1200; //timeline长度(左右)
+const timelineWidth = 150;  //timeline宽度(上下)
 const maxTime = 30;         //最大乐曲时间
 const instrumentCount = 5;  //乐器数量
 
