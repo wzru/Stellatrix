@@ -133,7 +133,6 @@ mouseupButton = (e) => {
             e.style.backgroundColor = origin_color;
         }
     }
-    
     mouse_state = -1;
 }
 
@@ -289,6 +288,26 @@ switchClearState = () => {
     resetDefault();
 }
 
+function play_stellatrix_music() {
+    let music = generate_stellatrix_music(timeline_list);
+    play(music);
+    is_play = 0;
+}
+
+function tryPlayMusic() {
+    function doTry() {
+        if(is_play === 0) {
+            is_play = 1;
+            setTimeout(play_stellatrix_music, 0);
+        }
+    }
+    setTimeout(doTry, 0);
+}
+
+function switchListenState() {
+    tryPlayMusic();
+}
+
 //双击时移除input的禁止聚焦事件
 removeBlur = (e) => {
     e.removeAttribute("onfocus");
@@ -393,10 +412,10 @@ addToTimeline = (e) => {
 
     timeline_list.push(melody);
 
-    let width = calcLength(melody);
-    let height = calcWidth(melody);
-    // let width = "200px";
-    // let height  = "50px";
+    // let width = calcLength(melody);
+    // let height = calcWidth(melody);
+    let width = "200px";
+    let height  = "50px";
     let newdiv = document.createElement("div");
     newdiv.style.width = width;
     newdiv.style.height = height;
@@ -458,10 +477,6 @@ tryPlaySound = () => {
     }
     setTimeout(doTry, 0);
 }
-
-
-
-
 
 interact('.draggable')
   .draggable({

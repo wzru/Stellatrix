@@ -8,7 +8,7 @@
 const standard_note_name = "C4";
 const standard_note = letter_name_to_midi_note(standard_note_name);
 const single_note_time = 0.625;
-
+const interleaving_frac = 3 / 4;
 
 var $tone_matrix; // canvas container for tone matrix
 
@@ -784,5 +784,5 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
       return iter(tmp, tail(rest));
     }
   }
-  return interleavingly(reverse(iter(null, list_2d)), 3 / 4);
+  return interleavingly(reverse(iter(null, list_2d)), interleaving_frac);
 }
