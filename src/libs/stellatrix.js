@@ -721,23 +721,40 @@ function removeSilence(matrix) {
   return matrix;
 }
 
-
 //calculate the TRUE note that the button stands
-function calcNote(standard_note_name, cnt, excursion) {
+// function calcNote(cnt, excursion) {
+//   const curScale = 4;
+//   const curLetter = 0;//means 'C' or 'Do'
+//   const scaleSize = 7;
+//   const letter_to_number = {
+//     'C': 0,
+//     'D': 1,
+//     'E': 2,
+//     'F': 3,
+//     'G': 4,
+//     'A': 5,
+//     'B': 6,
+//   };
+//   const number_to_letter = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+//   const scale = curScale + Math.floor((cnt + excursion) / scaleSize);
+//   const number = curLetter + (cnt + excursion - Math.floor((cnt + excursion) / scaleSize) * scaleSize);
+//   return letter_name_to_midi_note(number_to_letter[number] + (scale + ''));
+// }
+
+function calcNote(cnt, excursion) {
   const curScale = 4;
   const curLetter = 0;//means 'C' or 'Do'
+  const scaleSize = 5;
   const letter_to_number = {
     'C': 0,
     'D': 1,
-    'E': 2,
-    'F': 3,
-    'G': 4,
-    'A': 5,
-    'B': 6,
+    'F': 2,
+    'G': 3,
+    'A': 4,
   };
-  const number_to_letter = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-  const scale = curScale + Math.floor((cnt + excursion) / 7);
-  const number = curLetter + (cnt + excursion - Math.floor((cnt + excursion) / 7) * 7);
+  const number_to_letter = ['C', 'D', 'F', 'G', 'A'];
+  const scale = curScale + Math.floor((cnt + excursion) / scaleSize);
+  const number = curLetter + (cnt + excursion - Math.floor((cnt + excursion) / scaleSize) * scaleSize);
   return letter_name_to_midi_note(number_to_letter[number] + (scale + ''));
 }
 
@@ -761,7 +778,7 @@ function make_stellatrix_sound(matrix_property, instrument_property) {
       else {
         if (head(rest) === 1) {
           const tmp = pair(make_unit_sound(i_name,
-            calcNote(standard_note, cnt, excursion),
+            calcNote(cnt, excursion),
             single_note_time * duration_rate,
             force_rate),
             result);
