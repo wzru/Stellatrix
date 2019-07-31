@@ -1,14 +1,15 @@
 * {
     margin:                                     0;
     padding:                                    0;
+    font-family:                                Georgia, 'Times New Roman', Times, serif;
 }
 body {
     /* background-color:                           rgb(27, 27, 27); */
-    background-image:                           url("../images/star1.jpg");
+    background-image:                           url("../images/star.jpg");
     background-size: 100%;
     display:                                    flex;
     flex-direction:                             column;
-    justify-content:                            space-between;
+    justify-content:                            flex-end;
     align-items:                                center;
     color:                                      white;
 }
@@ -17,16 +18,17 @@ input {
 }
 .part1 {
     display:                                    flex;
+    width:                                      100%;
     flex-direction:                             row;
     align-items:                                center;
     justify-content:                            space-around;
     margin:                                     30px 0px 30px 0px;
 }
 .logo {
-    width:                                      200px;
+    width:                                      250px;
 }
 .instruments {
-    width:                                      400px;
+    width:                                      500px;
     display:                                    flex;
     justify-content:                            space-around;
 }
@@ -40,11 +42,12 @@ input {
     box-shadow:                                 1px 1px 5px gray;
 }
 .feature {
-    width:                                      500px;
+    width:                                      400px;
 }
 
 .part2 {
     display:                                    flex;
+    width:                                      100%;
     justify-content:                            space-around;
     align-items:                                flex-start;
 }
@@ -53,7 +56,7 @@ input {
     left:                                       20px;
     margin:                                     0px 0px 0px 0px;
     height:                                     400px;
-    width:                                      200px;
+    width:                                      250px;
     overflow-y:                                 scroll;
     overflow-x:                                 hidden;
 }
@@ -61,33 +64,60 @@ input {
     display:                                    none;
 }
 .lists {
-    height:                                     80px;
-    width:                                      200px;
-    box-shadow:                                 .1px .1px 8px white;
-    background-color:                           rgb(30, 32, 32);
+    height:                                     60px;
+    width:                                      230px;
+    border:                                     1px rgb(236, 235, 235) dashed;
+    background-color:                           rgba(167, 179, 243, 0);
+    border-radius:                              15px;
+    margin:                                     15px 0px 15px 0px;
+    padding:                                    5px;
     display:                                    flex;
     align-items:                                center;
     justify-content:                            space-around;
 }
 .currentList {
-    background-color:                           rgb(73, 70, 70);
+    border:                                     2px rgb(236, 235, 235) solid;
 }
-.lists .del:hover{
+.lists .del:hover {
     cursor:                                     pointer;
     color:                                      rgb(248, 53, 53);
 }
-
+.lists .add:hover {
+    cursor:                                     pointer;
+    color:                                      blue;
+}
+.lists input {
+    color:                                      white;
+    width:                                      180px;
+    outline:                                    none;
+    background:                                 none;
+    border:                                     none;
+    font-size:                                  120%;
+}
+.lists span {
+    visibility:                                 hidden;
+    font-size:                                  180%;
+}
+.lists:hover span {
+    visibility:                                 visible;
+}
+.lists button {
+    visibility:                                 hidden;
+}
+.lists:hover button {
+    visibility:                                 visible;
+}
 .rows {
     display:                                    flex;
     flex-direction:                             row;
     /* justify-content:                            space-around; */
 }
 .launchpad {
-    width:                                      600px;
+    width:                                      500px;
     display:                                    flex;
     flex-direction:                             column;
     align-items:                                center;
-    margin:                                     -5px 20px 20px 0px;
+    margin:                                     -5px 0px 20px 0px;
 }
 .launchpad button {
     width:                                      25px;
@@ -97,10 +127,24 @@ input {
     border-radius:                              1px;
     background-color:                           rgb(42, 42, 42);
 }
-
+.property {
+    width:                                      400px;
+    height:                                     500px;
+    display:                                    flex;
+    flex-direction:                             column;
+    align-items:                                center;
+    justify-content:                            flex-start;
+    /* border:                                     1px white solid;
+    border-radius:                              30px;
+    padding:                                    40px;
+    background-image:                            url("../images/moon.png");
+    background-repeat:                          no-repeat;
+    background-size:                            20%;
+    background-position:                        bottom right; */
+}
 .roll_bar {
     margin:                                     35px 0px 35px 0px;
-    width:                                      400px;
+    width:                                      300px;
     display:                                    flex;
     justify-content:                            space-around;
 
@@ -109,15 +153,44 @@ input {
     width:                                      80px;
 }
 .roll_bar input {
-    width:                                      200px;
+    width:                                      150px;
 }
 
 .timeline {
-    background-color:                           aquamarine;
+    background:                                 rgb(95, 94, 94);
+    /* border:                                     1px white solid; */
+    /* border-radius:                              20px; */
+    margin:                                     0px 0px 20px 0px;
 }
 
+button {
+    cursor:                                     pointer;
+}
+button:hover {
+    border:                                     1px solid white;
+}
+.lists button {
+    border:                                     none;
+    background:                                 none;
+    color:                                      white;
+}
+.feature button {
+    background:                                 none;
+    width:                                      60px;
+    border-radius:                              15px;
+    color:                                      whitesmoke;
+    font-size:                                  110%;
+    border:                                     1px solid white;
+    margin:                                     0px 15px 0px 15px;
+    cursor:                                     pointer;
+    padding:                                    5px;
+}
 
-
+.feature button:hover {
+    border:                                     1px solid white;
+    border-radius:                              10px;
+    padding:                                    5px;
+}
 
 
 #drag-1, #drag-2 {

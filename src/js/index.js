@@ -90,6 +90,9 @@ getCol = (str) => {
 
 // change chosen array when you click a button
 mousedownButton = (e) => {
+    //因为在choose_melody的时候matrix_property的数组变成了存在music_list里的引用，所以更改的时候要把这个数组的引用重新改为chosen
+    matrix_property.matrix = chosen;
+
     let row = getRow(e.className);
     let col = getCol(e.className);
     start_row = row;
@@ -231,10 +234,11 @@ switchSaveState = () => {
             newdel.setAttribute("onclick", "delMelody(this)");
             newdiv.appendChild(newdel);
             //创建 添加到时间轴 按钮
-            let newadd = document.createElement("button");
+            let newadd = document.createElement("span");
             newadd.setAttribute("title", "click to add to timeline");
             newadd.setAttribute("onclick", "addToTimeline(this)");
-            let add_value = document.createTextNode("add");
+            newadd.setAttribute("class", "add");
+            let add_value = document.createTextNode("＋");
             newadd.appendChild(add_value);
             newdiv.appendChild(newadd);
         }
@@ -335,9 +339,9 @@ chooseMelody = (e) => {
     }
     e.classList.add("currentList");
     //如果当前片段还未保存
-    if(current_music === -1) {
-        switchSaveState();
-    }
+    // if(current_music === -1) {
+    //     switchSaveState();
+    // }
     //如果当前列表未存储片段
     if(e.childNodes[0] === undefined) {
         current_music = -1;
@@ -412,10 +416,10 @@ addToTimeline = (e) => {
 
     timeline_list.push(melody);
 
-    // let width = calcLength(melody);
-    // let height = calcWidth(melody);
-    let width = "200px";
-    let height  = "50px";
+    let width = calcLength(melody) + "px";
+    let height = calcWidth(melody) + "px";
+    // let width = "200px";
+    // let height  = "50px";
     let newdiv = document.createElement("div");
     newdiv.style.width = width;
     newdiv.style.height = height;
@@ -504,7 +508,7 @@ interact('.draggable')
         // (Math.sqrt(Math.pow(event.pageX - event.x0, 2) +
         //            Math.pow(event.pageY - event.y0, 2) | 0))
         //   .toFixed(2) + 'px')
-        event.target.getAttribute("data-x"))
+        Math.ceil(event.target.getAttribute("data-x")))
     }
   })
 
@@ -524,7 +528,7 @@ function dragMoveListener (event) {
   target.setAttribute('data-y', y)
 
   let num = target.getAttribute("data-num");
-  timeline_list[num].begin_px = x;
+  timeline_list[num].begin_px = Math.ceil(x);
 }
 
 // this is used later in the resizing and gesture demos
