@@ -37,17 +37,17 @@
         </div>
 
         <div class="property">
-            <!-- <div>
-                <span>Property</span>
-                <button onclick="resetDefault()">reset</button>
-            </div> -->
+            <div>
+                <!-- <span>Property</span> -->
+                <button onclick="resetDefault()">Default</button>
+            </div> 
             <div class="roll_bar">
-                <span>Speed</span>
+                <span class="property_name">Speed</span>
                 <input type="range" min="1" max="9" value="5" oninput="changeNumber(this)">
                 <span>5</span>
             </div><!--rollbar-->
             <div class="roll_bar">
-                <span>Excursion</span>
+                <span class="property_name">Excursion</span>
                 <input type="range" min="-36" max="36" value="0" oninput="changeNumber(this)">
                 <span>0</span>
             </div><!--rollbar-->
@@ -56,9 +56,10 @@
     </div><!--part2-->
 
     <div class="part3">
-        <button onclick="switchListenState()">Listen</button>
+        <!-- <button onclick="switchListenState()">Listen</button> -->
 
         <div class="timeline">
+            <img class="play" src="images/Play.svg" width="40px" onclick="switchListenState()">
         </div>
     </div>
     

@@ -309,6 +309,9 @@ function tryPlayMusic() {
 }
 
 function switchListenState() {
+    let play = document.getElementsByClassName("play")[0];
+    play.setAttribute("src", "images/Play-g.svg");
+    play.style.cursor = "wait";
     tryPlayMusic();
 }
 
