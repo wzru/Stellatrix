@@ -1,4 +1,4 @@
-import interact from "interactjs"
+// import interact from "interactjs"
 
 const matrix_row = 14;
 const matrix_col = 14;
@@ -7,7 +7,7 @@ const origin_color = "rgb(42, 42, 42)";
 //default speed, excursion and force
 const defaults = [5, 0, 5];
 
-const colors = ["red", "orange", "yello", "green", "blue", "purple"];
+const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
 
 let sound = null;
 let is_play = 0;
@@ -402,6 +402,10 @@ addToTimeline = (e) => {
     newdiv.style.height = height;
     newdiv.style.backgroundColor = melody.color;
     newdiv.setAttribute("class", "draggable");
+    newdiv.setAttribute("data-num", timeline_list.length - 1);
+
+    let newp = document.createElement("p");
+    newdiv.appendChild(newp);
 
     document.getElementsByClassName("timeline")[0].appendChild(newdiv);
 }
@@ -454,3 +458,59 @@ tryPlaySound = () => {
     }
     setTimeout(doTry, 0);
 }
+
+
+
+
+
+interact('.draggable')
+  .draggable({
+    // enable inertial throwing
+    inertia: true,
+    // keep the element within the area of it's parent
+    modifiers: [
+      interact.modifiers.restrictRect({
+        restriction: 'parent',
+        endOnly: true
+      })
+    ],
+    // enable autoScroll
+    autoScroll: true,
+
+    // call this function on every dragmove event
+    onmove: dragMoveListener,
+    // call this function on every dragend event
+    onend: function (event) {
+        console.log(event.target);
+      var textEl = event.target.querySelector('p')
+
+      textEl && (textEl.textContent =
+        // 'moved a distance of ' +
+        // (Math.sqrt(Math.pow(event.pageX - event.x0, 2) +
+        //            Math.pow(event.pageY - event.y0, 2) | 0))
+        //   .toFixed(2) + 'px')
+        event.target.getAttribute("data-x"))
+    }
+  })
+
+function dragMoveListener (event) {
+  let target = event.target
+  // keep the dragged position in the data-x/data-y attributes
+  let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
+  let y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
+
+  // translate the element
+  target.style.webkitTransform =
+    target.style.transform =
+      'translate(' + x + 'px, ' + y + 'px)'
+
+  // update the posiion attributes
+  target.setAttribute('data-x', x)
+  target.setAttribute('data-y', y)
+
+  let num = target.getAttribute("data-num");
+  timeline_list[num].begin_px = x;
+}
+
+// this is used later in the resizing and gesture demos
+window.dragMoveListener = dragMoveListener
