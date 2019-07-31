@@ -310,6 +310,7 @@ function tryPlayMusic() {
 }
 
 function switchListenState() {
+    if(timeline_list.length === 0) return;
     let play = document.getElementsByClassName("play")[0];
     play.setAttribute("src", "images/Play-g.svg");
     play.style.cursor = "wait";
@@ -392,7 +393,6 @@ chooseMelody = (e) => {
             document.getElementsByClassName("roll_bar")[i].childNodes[5].innerHTML = values[i];
         }
     }
-    
 }
 
 addToTimeline = (e) => {
