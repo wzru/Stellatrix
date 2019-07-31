@@ -7,7 +7,7 @@ const origin_color = "rgb(42, 42, 42)";
 //default speed, excursion and force
 const defaults = [5, 0, 5];
 
-const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
+const colors = ["rgb(234, 169, 169)", "rgb(95, 170, 129)", "rgb(91, 178, 219)", "rgb(125, 145, 208)", "#FFBA84"];
 
 let sound = null;
 let is_play = 0;
@@ -296,6 +296,7 @@ function play_stellatrix_music() {
     let music = generate_stellatrix_music(timeline_list);
     play(music);
     is_play = 0;
+    resetPlayButton();
 }
 
 function tryPlayMusic() {
