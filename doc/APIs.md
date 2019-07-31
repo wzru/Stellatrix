@@ -49,3 +49,7 @@ The function receives a `melody`(JSON) and returns its length(in px) will be in 
 4. `calcWidth(melody);`
 
 The function receives a `melody`(JSON) and returns its width(in px) will be in the `timeline`.
+
+5. `calcNote(cnt, excursion);`
+
+The function receives the `row`(the lowest one is 0) and the `excursion` and returns the note name(`string`) that the button corresponds.
