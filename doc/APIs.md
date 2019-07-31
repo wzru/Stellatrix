@@ -35,7 +35,7 @@ The `melody` is a JSON.
 
 ```javascript
 melody = {
-	"music_id" : integer,              
+    "music_id" : integer,              
     "m_prop"   : matrix_property,      
     "i_prop"   : instrument_property,
     "begin_px" : integer              // the begin position in the timeline

@@ -741,12 +741,16 @@ function calcNote(standard_note_name, cnt, excursion) {
   return letter_name_to_midi_note(number_to_letter[number] + (scale + ''));
 }
 
+function calcDurationRate(speed) {
+  return 5 / speed;
+}
+
 function make_stellatrix_sound(matrix_property, instrument_property) {
   let matrix = [...matrix_property["matrix"]];
   const list_2d = vector_to_list(removeSilence(matrix));
   const excursion = instrument_property["excursion"];
   const i_name = instrument_property["i_name"];
-  const duration_rate = 5 / instrument_property["speed"];
+  const duration_rate = calcDuration(instrument_property["speed"]);
   const force_rate = instrument_property["force"] / 5;
   function boolean_vector_to_sound(ba) {//处理第二维
     const lst = vector_to_list(ba);
