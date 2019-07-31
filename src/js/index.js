@@ -174,7 +174,6 @@ switchNewState = () => {
 
     let lists = document.getElementsByClassName("lists");
     let length = lists.length;
-    console.log("length:", length);
     for (let i = 0; i < length; i++) {
         lists[i].classList.remove("currentList");
     }
@@ -216,6 +215,7 @@ switchSaveState = () => {
         music_list.push(music_fragment);
         //渲染music_list
         let newdiv = document.getElementsByClassName("num" + num)[0];
+        //如果当前为歌曲为新建歌曲且没有点过save 而是通过new来调用的save 那么给它取个名字
         if(newdiv.childNodes[0] === undefined) {
             let input_value = num + 1 + ". " + i_prop.i_name;
             let newinput = document.createElement("input");
@@ -232,27 +232,31 @@ switchSaveState = () => {
             newdiv.appendChild(newdel);
         }
     }
+    else if(current_music === -2) {
+        
+    }
     else {
         let num = current_music;
         music_list[num].m_prop = m_prop;
         music_list[num].i_prop = i_prop;
 
-        let newdiv = document.getElementsByClassName("num" + num)[0];
-        if(newdiv.childNodes[0] === undefined) {
-            let input_value = num + 1 + ". " + i_prop.i_name;
-            let newinput = document.createElement("input");
-            newinput.setAttribute("value", input_value);
-            newinput.setAttribute("ondblclick", "removeBlur(this)");
-            newinput.setAttribute("onfocus", "this.blur()");
-            newinput.setAttribute("onblur", "setBlur(this)");
-            newdiv.appendChild(newinput);
-            let newdel = document.createElement("span");
-            let del_value = document.createTextNode("×");
-            newdel.appendChild(del_value);
-            newdel.setAttribute("class", "del");
-            newdel.setAttribute("onclick", "delMelody(this)");
-            newdiv.appendChild(newdel);
-        }
+        // let newdiv = document.getElementsByClassName("num" + num)[0];
+        // //如果当前为歌曲为新建歌曲且没有点过save 而是通过new来调用的save 那么给它取个名字
+        // if(newdiv.childNodes[0] === undefined) {
+        //     let input_value = num + 1 + ". " + i_prop.i_name;
+        //     let newinput = document.createElement("input");
+        //     newinput.setAttribute("value", input_value);
+        //     newinput.setAttribute("ondblclick", "removeBlur(this)");
+        //     newinput.setAttribute("onfocus", "this.blur()");
+        //     newinput.setAttribute("onblur", "setBlur(this)");
+        //     newdiv.appendChild(newinput);
+        //     let newdel = document.createElement("span");
+        //     let del_value = document.createTextNode("×");
+        //     newdel.appendChild(del_value);
+        //     newdel.setAttribute("class", "del");
+        //     newdel.setAttribute("onclick", "delMelody(this)");
+        //     newdiv.appendChild(newdel);
+        // }
     }
 }
 //click clear button and reset everything to default
@@ -265,6 +269,13 @@ switchClearState = () => {
             document.getElementsByClassName("buttons")[(matrix_row - j - 1) * matrix_col + i].style.backgroundColor = origin_color;
         }
     }
+    //reset instrument
+    instrument_property.i_name = "piano";
+    for (let i = 0; i < 5; i++) {
+        document.getElementsByClassName("instrument")[i].classList.remove("currentInstrument");
+    }
+    document.getElementsByClassName("piano")[0].className += " currentInstrument";
+    //reset properties
     resetDefault();
 }
 // render_list = () => {
@@ -286,8 +297,8 @@ delMelody = (e) => {
     // music_list.splice(del_num, 1);
     e.parentNode.parentNode.removeChild(document.getElementsByClassName("num" + del_num)[0]);
     switchClearState();
-
-    current_music = -1;
+    //独有的记录删除了乐曲的标记
+    current_music = -2;
 }
 
 chooseMelody = (e) => {
@@ -297,7 +308,10 @@ chooseMelody = (e) => {
         lists[i].classList.remove("currentList");
     }
     e.classList.add("currentList");
-    
+    //如果当前片段还未保存
+    if(current_music === -1) {
+        switchSaveState();
+    }
     //如果当前列表未存储片段
     if(e.childNodes[0] === undefined) {
         current_music = -1;
