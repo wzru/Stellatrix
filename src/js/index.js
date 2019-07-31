@@ -315,6 +315,12 @@ function switchListenState() {
     tryPlayMusic();
 }
 
+resetPlayButton = () => {
+    let play = document.getElementsByClassName("play")[0];
+    play.setAttribute("src", "images/Play.svg");
+    play.style.cursor = "pointer";
+}
+
 //双击时移除input的禁止聚焦事件
 removeBlur = (e) => {
     e.removeAttribute("onfocus");
