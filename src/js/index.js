@@ -393,10 +393,10 @@ addToTimeline = (e) => {
 
     timeline_list.push(melody);
 
-    // let width = calcLength(melody);
-    // let height = calcWidth(melody);
-    let width = "200px";
-    let height  = "50px";
+    let width = calcLength(melody);
+    let height = calcWidth(melody);
+    // let width = "200px";
+    // let height  = "50px";
     let newdiv = document.createElement("div");
     newdiv.style.width = width;
     newdiv.style.height = height;
