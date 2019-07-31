@@ -1,9 +1,13 @@
+import interact from "interactjs"
+
 const matrix_row = 14;
 const matrix_col = 14;
 //button's origion color
 const origin_color = "rgb(42, 42, 42)";
 //default speed, excursion and force
 const defaults = [5, 0, 5];
+
+const colors = ["red", "orange", "yello", "green", "blue", "purple"];
 
 let sound = null;
 let is_play = 0;
@@ -24,6 +28,7 @@ for (let i = 0; i < matrix_col; i++) {
 }
 
 var music_list = [];
+var timeline_list = [];
 
 matrix_property = {
     "m_row": matrix_row,
@@ -147,20 +152,14 @@ mouseoverButton = (e) => {
     }
 }
 
-//change property number when you slide the rollbar
-changeNumber = (e) => {
-    e.nextElementSibling.innerHTML = e.value;
-    let property = e.previousElementSibling.innerHTML.toLowerCase();
-    if (property === "speed") {
-        instrument_property.speed = parseInt(e.value);
+//set instrument when you click the instruments buttons
+setInstrument = (e) => {
+    instrument_property.i_name = e.childNodes[1].innerHTML.toLowerCase();
+    for (let i = 0; i < 5; i++) {
+        document.getElementsByClassName("instrument")[i].classList.remove("currentInstrument");
     }
-    else if (property === "excursion") {
-        instrument_property.excursion = parseInt(e.value);
-    }
-    else if (property === "force") {
-        instrument_property.force = parseInt(e.value);
-    }
-    has_changed = 1;
+    //change the current instrument's style
+    e.className += " currentInstrument";
 }
 
 switchPlayState = () => {
@@ -217,6 +216,7 @@ switchSaveState = () => {
         let newdiv = document.getElementsByClassName("num" + num)[0];
         //如果当前为歌曲为新建歌曲且没有点过save 而是通过new来调用的save 那么给它取个名字
         if(newdiv.childNodes[0] === undefined) {
+            //给片段取名
             let input_value = num + 1 + ". " + i_prop.i_name;
             let newinput = document.createElement("input");
             newinput.setAttribute("value", input_value);
@@ -224,17 +224,27 @@ switchSaveState = () => {
             newinput.setAttribute("onfocus", "this.blur()");
             newinput.setAttribute("onblur", "setBlur(this)");
             newdiv.appendChild(newinput);
+            //创建del按钮
             let newdel = document.createElement("span");
             let del_value = document.createTextNode("×");
             newdel.appendChild(del_value);
             newdel.setAttribute("class", "del");
             newdel.setAttribute("onclick", "delMelody(this)");
             newdiv.appendChild(newdel);
+            //创建 添加到时间轴 按钮
+            let newadd = document.createElement("button");
+            newadd.setAttribute("title", "click to add to timeline");
+            newadd.setAttribute("onclick", "addToTimeline(this)");
+            let add_value = document.createTextNode("add");
+            newadd.appendChild(add_value);
+            newdiv.appendChild(newadd);
         }
     }
+    //如果是刚刚删除过的 什么都不做
     else if(current_music === -2) {
         
     }
+    //如果是当前选中某一段音乐 更新当前片段数据
     else {
         let num = current_music;
         music_list[num].m_prop = m_prop;
@@ -278,16 +288,13 @@ switchClearState = () => {
     //reset properties
     resetDefault();
 }
-// render_list = () => {
-//     let length = music_list.length;
-//     for(let i = 0; i < length; i++) {
 
-//     }
-// }
+//双击时移除input的禁止聚焦事件
 removeBlur = (e) => {
     e.removeAttribute("onfocus");
     e.focus();
 }
+//当input失去焦点时再禁止单击聚焦
 setBlur = (e) => {
     e.setAttribute("onfocus", "this.blur()");
 }
@@ -355,6 +362,57 @@ chooseMelody = (e) => {
     
 }
 
+addToTimeline = (e) => {
+    let melody = {};
+    let m_prop = {};
+    let i_prop = {};
+    let cur_num = e.parentNode.getAttribute("data-num");
+    let cur_melody = music_list[cur_num];
+
+    let c = new Array(matrix_col);
+    for(let i = 0; i < matrix_col; i++) {
+        c[i] = new Array(matrix_row);
+        for(let j = 0; j < matrix_row; j++) {
+            c[i][j] = cur_melody.m_prop.matrix[i][j];
+        }
+    }
+
+    m_prop.m_col = cur_melody.m_prop.m_col;
+    m_prop.matrix = c;
+
+    i_prop.i_name = cur_melody.i_prop.i_name;
+    i_prop.speed = cur_melody.i_prop.speed;
+    i_prop.excursion = cur_melody.i_prop.excursion;
+    i_prop.force = cur_melody.i_prop.force;
+
+    melody.music_id = timeline_list.length;
+    melody.m_prop = m_prop;
+    melody.i_prop = i_prop;
+    melody.begin_px = 0;
+    melody.color = colors[melody.music_id % colors.length];
+
+    timeline_list.push(melody);
+
+    // let width = calcLength(melody);
+    // let height = calcWidth(melody);
+    let width = "200px";
+    let height  = "50px";
+    let newdiv = document.createElement("div");
+    newdiv.style.width = width;
+    newdiv.style.height = height;
+    newdiv.style.backgroundColor = melody.color;
+    newdiv.setAttribute("class", "draggable");
+
+    document.getElementsByClassName("timeline")[0].appendChild(newdiv);
+}
+
+render_timeline = () => {
+    let timeline = document.getElementsByClassName("timeline")[0];
+    timeline.style.width = timelineLength + "px";
+    timeline.style.height = timelineWidth + "px";
+}
+render_timeline();
+
 //click reset button and set properties to default
 resetDefault = () => {
     for (let i = 0; i < 2; i++) {
@@ -366,15 +424,19 @@ resetDefault = () => {
     instrument_property.excursion = 0;
     instrument_property.force = 5;
 }
-
-//set instrument when you click the instruments buttons
-setInstrument = (e) => {
-    instrument_property.i_name = e.childNodes[1].innerHTML.toLowerCase();
-    for (let i = 0; i < 5; i++) {
-        document.getElementsByClassName("instrument")[i].classList.remove("currentInstrument");
+//change property number when you slide the rollbar
+changeNumber = (e) => {
+    e.nextElementSibling.innerHTML = e.value;
+    let property = e.previousElementSibling.innerHTML.toLowerCase();
+    if (property === "speed") {
+        instrument_property.speed = parseInt(e.value);
     }
-    //change the current instrument's style
-    e.className += " currentInstrument";
+    else if (property === "excursion") {
+        instrument_property.excursion = parseInt(e.value);
+    }
+    else if (property === "force") {
+        instrument_property.force = parseInt(e.value);
+    }
 }
 
 play_stellatrix_sound = () => {

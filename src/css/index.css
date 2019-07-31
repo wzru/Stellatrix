@@ -8,6 +8,7 @@ body {
     display:                                    flex;
     flex-direction:                             column;
     justify-content:                            space-between;
+    align-items:                                center;
     color:                                      white;
 }
 input {
@@ -18,7 +19,7 @@ input {
     flex-direction:                             row;
     align-items:                                center;
     justify-content:                            space-around;
-    margin:                                     30px 0px 50px 0px;
+    margin:                                     30px 0px 30px 0px;
 }
 .logo {
     width:                                      200px;
@@ -44,12 +45,12 @@ input {
 .part2 {
     display:                                    flex;
     justify-content:                            space-around;
-    align-items:                                center;
+    align-items:                                flex-start;
 }
 .melody_list {
     /* position:                                   fixed; */
     left:                                       20px;
-    margin:                                     0px 200px 0px 0px;
+    margin:                                     0px 0px 0px 0px;
     height:                                     400px;
     width:                                      200px;
     overflow-y:                                 scroll;
@@ -81,10 +82,11 @@ input {
     /* justify-content:                            space-around; */
 }
 .launchpad {
-    width:                                      400px;
+    width:                                      600px;
     display:                                    flex;
     flex-direction:                             column;
     align-items:                                center;
+    margin:                                     -5px 20px 20px 0px;
 }
 .launchpad button {
     width:                                      25px;
@@ -97,14 +99,18 @@ input {
 
 .roll_bar {
     margin:                                     35px 0px 35px 0px;
-    width:                                      500px;
+    width:                                      400px;
     display:                                    flex;
     justify-content:                            space-around;
 
 }
 .roll_bar span {
-    width:                                      100px;
+    width:                                      80px;
 }
 .roll_bar input {
     width:                                      200px;
+}
+
+.timeline {
+    background-color:                           aquamarine;
 }
