@@ -137,6 +137,6 @@ function playFaded() {
     )));
 }
 
-function playDemoMusic() {
-    setTimeout(playFaded(), 0);
-}
+// function playDemoMusic() {
+//     setTimeout(playFaded(), 0);
+// }
