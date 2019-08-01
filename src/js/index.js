@@ -292,6 +292,11 @@ switchClearState = () => {
     resetDefault();
 }
 
+playDemoMusic = () => {
+    let demo = document.getElementsByTagName("audio")[0];
+    demo.play();
+}
+
 function play_stellatrix_music() {
     let music = generate_stellatrix_music(timeline_list);
     play(music);
