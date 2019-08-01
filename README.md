@@ -26,6 +26,8 @@ The project is written in `JavaScript` and uses helpful `sound` libraries of `So
 
 ## Artefact
 
+![demo](./img/demo.png)
+
 In the upper part, there are some instruments to choose. You can use each of them to make a melody.
 
 In the middle part, there is a matrix whose tiles when pressed transform from dark to light. Different combinations of light and dark tiles will make different melodies.
